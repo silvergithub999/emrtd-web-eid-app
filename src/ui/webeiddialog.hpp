@@ -72,6 +72,8 @@ public:
         close();
     }
 
+    void onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo);
+
 signals:
     void languageChange();
 

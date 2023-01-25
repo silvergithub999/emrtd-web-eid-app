@@ -33,11 +33,16 @@ const QString CMDLINE_SIGN = QStringLiteral("sign");
 // A special command for stdin mode for quitting the application after sending the version.
 const QString STDINMODE_QUIT = QStringLiteral("quit");
 
+const QString CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE = QStringLiteral("get-emrtd-signing-certificate");
+const QString CMDLINE_AUTHENTICATE_WITH_EMRTD = QStringLiteral("authenticate-with-emrtd");
+
 CommandType commandNameToCommandType(const QString& cmdName)
 {
     static const std::map<QString, CommandType> SUPPORTED_COMMANDS {
         {CMDLINE_GET_SIGNING_CERTIFICATE, CommandType::GET_SIGNING_CERTIFICATE},
         {CMDLINE_AUTHENTICATE, CommandType::AUTHENTICATE},
+        {CMDLINE_AUTHENTICATE_WITH_EMRTD, CommandType::AUTHENTICATE_WITH_EMRTD},
+        {CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE, CommandType::GET_EMRTD_SIGNING_CERTIFICATE},
         {CMDLINE_SIGN, CommandType::SIGN},
         {STDINMODE_QUIT, CommandType::QUIT},
     };

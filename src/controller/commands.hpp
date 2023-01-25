@@ -34,6 +34,8 @@ public:
         INSERT_CARD,
         GET_SIGNING_CERTIFICATE,
         AUTHENTICATE,
+        AUTHENTICATE_WITH_EMRTD,
+        GET_EMRTD_SIGNING_CERTIFICATE,
         SIGN,
         QUIT,
         ABOUT,
@@ -55,6 +57,8 @@ private:
 
 extern const QString CMDLINE_GET_SIGNING_CERTIFICATE;
 extern const QString CMDLINE_AUTHENTICATE;
+extern const QString CMDLINE_AUTHENTICATE_WITH_EMRTD;
+extern const QString CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE;
 extern const QString CMDLINE_SIGN;
 
 CommandType commandNameToCommandType(const QString& cmdName);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 Estonian Information System Authority
+ * Copyright (c) 2020-2021 Estonian Information System Authority
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,27 @@
  * SOFTWARE.
  */
 
-// TODO: emrtd ui stuff is a mess
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+#include "../controller/commandhandleremrtd.hpp"
 
-#include "ui.hpp"
-#include "mock-ui.hpp"
+#include "../controller/command-handlers/emrtd/getemrtdcertificate.hpp"
+#include "../controller/command-handlers/emrtd/authenticatewithemrtd.hpp"
 
-WebEidUI* WebEidUI::createAndShowDialog(const CommandType)
+// TODO:
+// getCommandHandler() has to be defined in the app project so that a different
+// mock implementation can be provided in the tests project.
+
+CommandHandlerEmrtd::ptr getCommandHandlerEmrtd(const CommandWithArguments& cmd)
 {
-    static MockUI instance;
-    return &instance;
-}
+    auto cmdType = cmd.first;
+    auto cmdCopy = CommandWithArguments {cmdType, cmd.second};
 
-void WebEidUI::showAboutPage() {}
-void WebEidUI::showFatalError() {}
-void WebEidUI::onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo) {}
+    switch (cmdType) {
+    case CommandType::GET_EMRTD_SIGNING_CERTIFICATE:
+        return std::make_unique<GetEmrtdCertificate>(cmdCopy);
+    case CommandType::AUTHENTICATE_WITH_EMRTD:
+        return std::make_unique<AuthenticateWithEmrtd>(cmdCopy);
+    default:
+        throw std::invalid_argument("Unknown command '" + std::string(cmdType)
+                                    + "' in getCommandHandlerEmrtd()");
+    }
+}

@@ -13,6 +13,22 @@ add_library(controller STATIC
     command-handlers/sign.hpp
     command-handlers/signauthutils.cpp
     command-handlers/signauthutils.hpp
+        command-handlers/emrtd/emrtdcertificatereader.cpp
+        command-handlers/emrtd/emrtdcertificatereader.hpp
+        command-handlers/emrtd/authenticatewithemrtd.cpp
+        command-handlers/emrtd/authenticatewithemrtd.hpp
+        command-handlers/emrtd/getemrtdcertificate.cpp
+        command-handlers/emrtd/getemrtdcertificate.hpp
+        command-handlers/emrtd/emrtd/bac.hpp
+        command-handlers/emrtd/emrtd/bac.cpp
+        command-handlers/emrtd/emrtd/emrtdutils.hpp
+        command-handlers/emrtd/emrtd/asn1utils.hpp
+        command-handlers/emrtd/emrtd/securemessagingobject.hpp
+        command-handlers/emrtd/emrtd/securemessagingobject.cpp
+        controlleremrtd.cpp
+        controlleremrtd.hpp
+        commandhandleremrtd.hpp
+        ../app/getcommandhandleremrtd.cpp
     commandhandler.hpp
     commands.cpp
     commands.hpp
@@ -32,6 +48,8 @@ add_library(controller STATIC
     threads/controllerchildthread.cpp
     threads/controllerchildthread.hpp
     threads/waitforcardthread.hpp
+        threads/commandhandlerconfirmthreademrtd.hpp
+        threads/commandhandlerrunthreademrtd.hpp
     ui.hpp
     utils.hpp
     writeresponse.cpp

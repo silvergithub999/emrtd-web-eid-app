@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 Estonian Information System Authority
+ * Copyright (c) 2020-2021 Estonian Information System Authority
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,35 @@
  * SOFTWARE.
  */
 
-// TODO: emrtd ui stuff is a mess
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma once
 
 #include "ui.hpp"
-#include "mock-ui.hpp"
 
-WebEidUI* WebEidUI::createAndShowDialog(const CommandType)
+/** Interface for command handlers that implement the actual work the application does, like get
+ * certificate, authenticate and sign. */
+class CommandHandlerEmrtd : public QObject
 {
-    static MockUI instance;
-    return &instance;
-}
+    Q_OBJECT
 
-void WebEidUI::showAboutPage() {}
-void WebEidUI::showFatalError() {}
-void WebEidUI::onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo) {}
+public:
+    using ptr = std::unique_ptr<CommandHandlerEmrtd>;
+
+    virtual void run(const std::vector<electronic_id::CardInfo::ptr>& cards) = 0;
+    virtual void connectSignals(const WebEidUI* window) = 0;
+    virtual QVariantMap onConfirm(WebEidUI* window,
+                                  const electronic_id::CardInfo& cardInfo) = 0;
+
+    CommandType commandType() const { return command.first; }
+
+signals:
+    void retry(const RetriableError error);
+
+    // TODO: rename
+    void onEmrtdCommand(const QUrl& origin, electronic_id::CardInfo::ptr cardInfo);
+
+protected:
+    CommandHandlerEmrtd(const CommandWithArguments& cmd) : command(cmd) {}
+    CommandWithArguments command;
+};
+
+CommandHandlerEmrtd::ptr getCommandHandlerEmrtd(const CommandWithArguments& cmd);

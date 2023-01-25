@@ -57,6 +57,8 @@ signals:
     void retry();
     void failure(const QString& error);
 
+    void runEmrtd(const electronic_id::CardInfo::ptr cardInfo);
+
 public: // slots
     virtual void quit() = 0;
     virtual void onSmartCardStatusUpdate(const RetriableError status) = 0;
@@ -70,4 +72,7 @@ public: // slots
     virtual void onSigningCertificateMismatch() = 0;
     virtual void onVerifyPinFailed(const electronic_id::VerifyPinFailed::Status status,
                                    const qint8 retriesLeft) = 0;
+
+    virtual void onEmrtdCommand(const QUrl& origin,
+                                const electronic_id::CardInfo::ptr cardInfo) = 0;
 };

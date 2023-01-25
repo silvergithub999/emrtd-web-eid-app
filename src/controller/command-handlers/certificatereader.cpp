@@ -147,7 +147,9 @@ void CertificateReader::validateAndStoreOrigin(const QVariantMap& arguments)
         || origin.hasFragment()) {
         THROW(CommandHandlerInputDataError, "origin is not in <scheme>://<host>[:<port>] format");
     }
+    /*
     if (origin.scheme() != QStringLiteral("https") && origin.scheme() != QStringLiteral("wss")) {
         THROW(CommandHandlerInputDataError, "origin scheme has to be https or wss");
     }
+     */
 }

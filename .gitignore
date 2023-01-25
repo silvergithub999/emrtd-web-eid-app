@@ -18,3 +18,10 @@ tests/tests/web-eid-tests
 build-web-eid-*/
 CMakeSettings.json
 .vs/
+
+**/CMakeFiles/**
+**/cmake-build-debug/**
+.idea
+*.cmake
+**/*_autogen/**
+*.make

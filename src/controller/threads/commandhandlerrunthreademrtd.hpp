@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 Estonian Information System Authority
+ * Copyright (c) 2020-2021 Estonian Information System Authority
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,32 @@
  * SOFTWARE.
  */
 
-// TODO: emrtd ui stuff is a mess
-#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma once
 
-#include "ui.hpp"
-#include "mock-ui.hpp"
+#include "controllerchildthread.hpp"
 
-WebEidUI* WebEidUI::createAndShowDialog(const CommandType)
+class CommandHandlerRunThreadEmrtd : public ControllerChildThread
 {
-    static MockUI instance;
-    return &instance;
-}
+    Q_OBJECT
 
-void WebEidUI::showAboutPage() {}
-void WebEidUI::showFatalError() {}
-void WebEidUI::onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo) {}
+public:
+    CommandHandlerRunThreadEmrtd(QObject* parent, CommandHandlerEmrtd& handler,
+                            const std::vector<electronic_id::CardInfo::ptr>& cs) :
+        ControllerChildThread(parent),
+        commandHandler(handler), cmdType(commandHandler.commandType()), cards(cs)
+    {
+        // Connect retry signal to retry signal to pass it up from the command handler.
+        connect(&commandHandler, &CommandHandlerEmrtd::retry, this, &ControllerChildThread::retry);
+    }
+
+private:
+    void doRun() override {
+        commandHandler.run(cards);
+    }
+
+    const std::string& commandType() const override { return cmdType; }
+
+    CommandHandlerEmrtd& commandHandler;
+    const std::string cmdType;
+    std::vector<electronic_id::CardInfo::ptr> cards;
+};

@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+// TODO: origin parameter in emrtd function
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "webeiddialog.hpp"
 #include "application.hpp"
 #include "punycode.hpp"
@@ -708,4 +711,10 @@ WebEidDialog::retriableErrorToTextTitleAndIcon(const RetriableError error)
         return {tr("Unknown error"), tr("Unknown error"), pixmap("no-id-card"_L1)};
     }
     return {tr("Unknown error"), tr("Unknown error"), pixmap("no-id-card"_L1)};
+}
+
+void WebEidDialog::onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo)
+{
+    // TODO: has no dialog. Should be moved into own file.
+    emit runEmrtd(cardInfo);
 }
