@@ -131,7 +131,7 @@ CommandWithArgumentsPtr Application::parseArgs()
                        parentWindow});
 
     static const auto COMMANDS = "'" + CMDLINE_GET_SIGNING_CERTIFICATE + "', '"
-        + CMDLINE_AUTHENTICATE + "', '" + CMDLINE_SIGN + "'."
+        + CMDLINE_AUTHENTICATE + "', '" + CMDLINE_SIGN + "', '"
         + CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE + "', '"
         + CMDLINE_AUTHENTICATE_WITH_EMRTD + "'.";
 
@@ -151,6 +151,10 @@ CommandWithArgumentsPtr Application::parseArgs()
         }
         const auto& command = args.first();
         const auto& arguments = args.at(1);
+
+        isEmrtdCommand = command == CMDLINE_AUTHENTICATE_WITH_EMRTD
+            || command == CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE;
+        
         if (
             command == CMDLINE_GET_SIGNING_CERTIFICATE
             || command == CMDLINE_AUTHENTICATE

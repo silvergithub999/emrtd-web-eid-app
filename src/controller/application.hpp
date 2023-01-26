@@ -45,6 +45,8 @@ class Application : public QApplication
 public:
     Application(int& argc, char** argv, const QString& name);
 
+    bool isEmrtdCommand;
+
     bool isDarkTheme() const;
     void loadTranslations(const QString& lang = {});
     CommandWithArgumentsPtr parseArgs();
@@ -64,6 +66,7 @@ signals:
 
 private:
     QTranslator* translator;
+
 #ifdef Q_OS_MAC
     std::unique_ptr<QMenuBar> menuBar;
 #endif

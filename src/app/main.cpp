@@ -32,8 +32,6 @@
 #include <QTimer>
 #include <iostream>
 
-bool isEmrtdCommand(CommandType cmdType);
-
 int main(int argc, char* argv[])
 {
    Q_INIT_RESOURCE(web_eid_resources);
@@ -42,7 +40,9 @@ int main(int argc, char* argv[])
    // TODO: should create 2 separate functions, but not sure how to pass app as parameter.
    Application app(argc, argv, QStringLiteral("web-eid"));
 
-   if (true) {
+   app.parseArgs();
+
+   if (app.isEmrtdCommand) {
        try {
            ControllerEmrtd controller(app.parseArgs());
 
@@ -77,9 +77,4 @@ int main(int argc, char* argv[])
    }
 
    return -1;
-}
-
-bool isEmrtdCommand(CommandType cmdType) {
-    return cmdType == CommandType::AUTHENTICATE_WITH_EMRTD
-        || cmdType == CommandType::GET_EMRTD_SIGNING_CERTIFICATE;
 }
