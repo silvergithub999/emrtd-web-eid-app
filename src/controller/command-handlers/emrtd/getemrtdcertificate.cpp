@@ -64,14 +64,14 @@ GetEmrtdCertificate::GetEmrtdCertificate(const CommandWithArguments& cmd) : Emrt
 QVariantMap GetEmrtdCertificate::onConfirm(WebEidUI* /* window */,
                                            const electronic_id::CardInfo& cardInfo)
 {
+    // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
+
     byte_vector mrz = readInfoFromIdAppletAndGetMrz(cardInfo.eid().smartcard());
 
-    // TODO: these should not be hardcoded
-    const std::string todoHardCoded = "BD0058280790080542008310";
-    byte_vector todoHardCodedBv(todoHardCoded.begin(), todoHardCoded.end());
+    selectEmrtdApplet(cardInfo.eid().smartcard());
 
     SecureMessagingObject smo =
-        BasicAccessControl::establishBacSessionKeys(todoHardCodedBv, cardInfo.eid().smartcard());
+        BasicAccessControl::establishBacSessionKeys(mrz, cardInfo.eid().smartcard());
 
     const auto dg15 = readDG15(smo, cardInfo.eid().smartcard());
 
@@ -85,6 +85,7 @@ QByteArray GetEmrtdCertificate::readDG15(
     const pcsc_cpp::SmartCard& card
 )
 {
+    // TODO: same code as in authenticatewithemrtd.cpp/hpp
     byte_vector dg15 = smo.readFile(card, {0x01, 0x0f});
     return QByteArray::fromRawData(reinterpret_cast<const char*>(dg15.data()),
                                    int(dg15.size()))
