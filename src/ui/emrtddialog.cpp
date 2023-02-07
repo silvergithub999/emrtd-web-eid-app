@@ -30,7 +30,7 @@
 #include "emrtddialog.hpp"
 
 // TODO: replace with new ui
-#include "ui_dialog.h"
+#include "ui_autogen/include/emrtdui_dialog.h"
 
 #include <QButtonGroup>
 #include <QDesktopServices>
@@ -77,7 +77,6 @@ EmrtdDialog::EmrtdDialog(QWidget* parent) : EmrtdUI(parent), ui(new Private)
         QFile f(QStringLiteral(":dark.qss"));
         if (f.open(QFile::ReadOnly | QFile::Text)) {
             setStyleSheet(styleSheet() + QTextStream(&f).readAll());
-            ui->selectCertificateOriginLabelIcon->setPixmap(pixmap("origin"_L1));
             ui->pinInputOriginLabelIcon->setPixmap(pixmap("origin"_L1));
             ui->cardChipIcon->setPixmap(pixmap("no-id-card"_L1));
             ui->fatalErrorIcon->setPixmap(pixmap("fatal"_L1));
@@ -116,7 +115,6 @@ EmrtdDialog::EmrtdDialog(QWidget* parent) : EmrtdUI(parent), ui(new Private)
     ui->selectionGroup = new QButtonGroup(this);
     ui->fatalError->hide();
     ui->fatalHelp->hide();
-    ui->selectAnotherCertificate->hide();
 
     connect(ui->pageStack, &QStackedWidget::currentChanged, this, &EmrtdDialog::resizeHeight);
     connect(ui->selectionGroup, qOverload<QAbstractButton*>(&QButtonGroup::buttonClicked), this,
@@ -229,9 +227,7 @@ void EmrtdDialog::onRetry(const RetriableError error)
 
 void EmrtdDialog::reject()
 {
-    if (!ui->pinEntryTimeoutProgressBar->isVisible()) {
-        EmrtdUI::reject();
-    }
+    EmrtdUI::reject();
 }
 
 bool EmrtdDialog::event(QEvent* event)
@@ -378,6 +374,8 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
             return tr("By authenticating, I agree to the transfer of my name and personal "
                       "identification code to the service provider.");
         });
+        // TODO: rename runEmrtd -> accepted
+        setupOK([this, cardInfo] { emit runEmrtd(cardInfo); });
         /*
         setTrText(ui->pinTitleLabel, [useExternalPinDialog] {
             return useExternalPinDialog

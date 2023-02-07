@@ -75,7 +75,7 @@ private:
     void setTrText(QWidget* label, const std::function<QString()>& text);
 
     void setupOK(const std::function<void()>& func, const std::function<QString()>& text = {},
-                 bool enabled = false);
+                 bool enabled = true);
 
     void resizeHeight();
 

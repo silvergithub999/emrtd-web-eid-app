@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WebEidDialog</class>
- <widget class="QDialog" name="WebEidDialog">
+ <class>EmrtdDialog</class>
+ <widget class="QDialog" name="EmrtdDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -134,7 +134,7 @@ background-color: #113F8E;
 border: 1px solid #003168;
 border-radius: 2px;
 }
-#waitingPageTitleLabel, #messagePageTitleLabel, #selectCertificatePageTitleLabel, #pinInputPageTitleLabel, #aboutPageLabel {
+#waitingPageTitleLabel, #messagePageTitleLabel, #pinInputPageTitleLabel, #aboutPageLabel {
 color: #003168;
 font-size: 32px;
 font-weight: bold;
@@ -196,7 +196,7 @@ height: 24px;
    <item>
     <widget class="QStackedWidget" name="pageStack">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="waitingPage">
       <layout class="QVBoxLayout" name="waitingPageLayout">
@@ -404,80 +404,7 @@ height: 24px;
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="selectCertificatePage">
-      <layout class="QVBoxLayout" name="selectCertificatePageLayout">
-       <property name="spacing">
-        <number>20</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="selectCertificatePageTitleLabel">
-         <property name="focusPolicy">
-          <enum>Qt::TabFocus</enum>
-         </property>
-         <property name="text">
-          <string>Select a certificate</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="selectCertificateLabelLayout" columnstretch="0,1">
-         <property name="horizontalSpacing">
-          <number>9</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>10</number>
-         </property>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="selectCertificateDescriptionLabel">
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-           <property name="text">
-            <string>By choosing the certificate, I agree to the transfer of my name and personal identification code to the service provider.</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="selectCertificateOriginLabelIcon">
-           <property name="pixmap">
-            <pixmap resource="web-eid-resources.qrc">:/images/origin.svg</pixmap>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="selectCertificateOriginLabel">
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="selectCertificateInfo">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="pinInputPage">
+     <widget class="QWidget" name="authenticatingWithEmrtdPage">
       <layout class="QVBoxLayout" name="pinInputPageLayout">
        <property name="spacing">
         <number>20</number>
@@ -550,121 +477,7 @@ height: 24px;
           <widget class="CertificateWidget" name="pinInputCertificateInfo" native="true"/>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="selectAnotherCertificateLayout">
-           <item>
-            <widget class="QToolButton" name="selectAnotherCertificate">
-             <property name="text">
-              <string>Select another certificate</string>
-             </property>
-             <property name="icon">
-              <iconset resource="web-eid-resources.qrc">
-               <normaloff>:/images/left.svg</normaloff>:/images/left.svg</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>24</width>
-               <height>24</height>
-              </size>
-             </property>
-             <property name="toolButtonStyle">
-              <enum>Qt::ToolButtonTextBesideIcon</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="selectAnotherCertificateSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="pinLayout">
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="pinTitleLabel">
-           <property name="font">
-            <font>
-             <family>Roboto</family>
-             <pointsize>-1</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Enter PIN1 for authentication</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>pinInput</cstring>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QLineEdit" name="pinInput">
-           <property name="maxLength">
-            <number>12</number>
-           </property>
-           <property name="echoMode">
-            <enum>QLineEdit::Password</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="pinErrorLabel">
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-           <property name="text">
-            <string notr="true">2 tries left</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="pinEntryTimeoutProgressBar">
-           <property name="value">
-            <number>50</number>
-           </property>
-           <property name="textVisible">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="pinTimeRemaining">
-           <property name="text">
-            <string notr="true">Time remaining:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="pinSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QHBoxLayout" name="selectAnotherCertificateLayout"/>
          </item>
         </layout>
        </item>
