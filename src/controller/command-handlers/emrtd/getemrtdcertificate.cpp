@@ -61,7 +61,7 @@ GetEmrtdCertificate::GetEmrtdCertificate(const CommandWithArguments& cmd) : Emrt
    requireArgumentsAndOptionalLang({"origin"}, arguments, "\"origin\": \"<origin URL>\"");
 }
 
-QVariantMap GetEmrtdCertificate::onConfirm(WebEidUI* /* window */,
+QVariantMap GetEmrtdCertificate::onConfirm(EmrtdUI* /* window */,
                                            const electronic_id::CardInfo& cardInfo)
 {
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();

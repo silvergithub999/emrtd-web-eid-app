@@ -29,7 +29,7 @@ class CommandHandlerConfirmThreadEmrtd : public ControllerChildThread
    Q_OBJECT
 
 public:
-    CommandHandlerConfirmThreadEmrtd(QObject* parent, CommandHandlerEmrtd& handler, WebEidUI* w,
+    CommandHandlerConfirmThreadEmrtd(QObject* parent, CommandHandlerEmrtd& handler, EmrtdUI* w,
                                const electronic_id::CardInfo& cardInfo) :
        ControllerChildThread(parent),
        commandHandler(handler), cmdType(commandHandler.commandType()), window(w),
@@ -51,6 +51,6 @@ private:
 
    CommandHandlerEmrtd& commandHandler;
    const std::string cmdType;
-   WebEidUI* window;
+   EmrtdUI* window;
    electronic_id::CardInfo cardInfo;
 };

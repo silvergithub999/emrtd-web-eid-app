@@ -38,8 +38,8 @@ class AuthenticateWithEmrtd : public EmrtdCertificateReader
 public:
    explicit AuthenticateWithEmrtd(const CommandWithArguments& cmd);
 
-   void connectSignals(const WebEidUI* window) override;
-   QVariantMap onConfirm(WebEidUI* window, const electronic_id::CardInfo& cardInfo) override;
+   void connectSignals(const EmrtdUI* window) override;
+   QVariantMap onConfirm(EmrtdUI* window, const electronic_id::CardInfo& cardInfo) override;
 
 private:
    QString challengeNonce;

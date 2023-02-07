@@ -89,7 +89,7 @@ void ControllerEmrtd::run()
         // If quit is requested, respond with empty JSON object and quit immediately.
         switch (command->first) {
         case CommandType::ABOUT:
-            WebEidUI::showAboutPage();
+            EmrtdUI::showAboutPage();
             return;
         case CommandType::QUIT:
             qInfo() << "Quit requested, exiting";
@@ -122,9 +122,9 @@ void ControllerEmrtd::startCommandExecution()
     saveChildThreadPtrAndConnectFailureFinish(waitForCardThread);
 
     // UI setup.
-    window = WebEidUI::createAndShowDialog(commandHandler->commandType());
+    window = EmrtdUI::createAndShowDialog(commandHandler->commandType());
 
-    connect(this, &ControllerEmrtd::statusUpdate, window, &WebEidUI::onSmartCardStatusUpdate);
+    connect(this, &ControllerEmrtd::statusUpdate, window, &EmrtdUI::onSmartCardStatusUpdate);
 
     // TODO: here should take the MRZ info
     connectOkCancelWaitingForMrz();
@@ -164,13 +164,11 @@ void ControllerEmrtd::connectOkCancelWaitingForMrz()
 {
     REQUIRE_NON_NULL(window)
 
-    // TODO
-    /*
-    connect(window, &WebEidUI::accepted, this, &ControllerEmrtd::onDialogOK);
-    connect(window, &WebEidUI::rejected, this, &ControllerEmrtd::onDialogCancel);
-    connect(window, &WebEidUI::failure, this, &ControllerEmrtd::onCriticalFailure);
-     */
-    connect(window, &WebEidUI::runEmrtd, this, &ControllerEmrtd::onConfirmCommandHandler);
+    // TODO: wrong type is accepted here
+    connect(window, &EmrtdUI::accepted, this, &ControllerEmrtd::onDialogOK);
+    connect(window, &EmrtdUI::rejected, this, &ControllerEmrtd::onDialogCancel);
+    connect(window, &EmrtdUI::failure, this, &ControllerEmrtd::onCriticalFailure);
+    connect(window, &EmrtdUI::runEmrtd, this, &ControllerEmrtd::onConfirmCommandHandler);
 }
 
 void ControllerEmrtd::onCardsAvailable(const std::vector<electronic_id::CardInfo::ptr>& availableCards)
@@ -210,7 +208,7 @@ void ControllerEmrtd::runCommandHandler(const std::vector<electronic_id::CardInf
         // When the command handler run thread retrieves certificates successfully, call
         // onCertificatesLoaded() that starts card event monitoring while user enters the PIN.
         // TODO: onCertificatesLoaded is wrong - rename
-        connect(commandHandler.get(), &CommandHandlerEmrtd::onEmrtdCommand, this,
+        connect(commandHandler.get(), &CommandHandlerEmrtd::onAuthenticateWithEmrtd, this,
                 &ControllerEmrtd::onCertificatesLoaded);
 
         commandHandlerRunThread->start();
@@ -311,12 +309,12 @@ void ControllerEmrtd::connectRetry(const ControllerChildThread* childThread)
     REQUIRE_NON_NULL(childThread)
     REQUIRE_NON_NULL(window)
 
-    disconnect(window, &WebEidUI::retry, nullptr, nullptr);
+    disconnect(window, &EmrtdUI::retry, nullptr, nullptr);
 
-    connect(childThread, &ControllerChildThread::retry, window, &WebEidUI::onRetry);
+    connect(childThread, &ControllerChildThread::retry, window, &EmrtdUI::onRetry);
     // This connection handles cancel events from PIN pad.
     connect(childThread, &ControllerChildThread::cancel, this, &ControllerEmrtd::onDialogCancel);
-    connect(window, &WebEidUI::retry, this, &ControllerEmrtd::onRetry);
+    connect(window, &EmrtdUI::retry, this, &ControllerEmrtd::onRetry);
 }
 
 void ControllerEmrtd::onDialogOK(const electronic_id::CardInfo::ptr cardInfo)
@@ -345,7 +343,7 @@ void ControllerEmrtd::onCriticalFailure(const QString& error)
     _result = makeErrorObject(RESP_TECH_ERROR, error);
     writeResponseToStdOut(isInStdinMode, _result, commandType());
     disposeUI();
-    WebEidUI::showFatalError();
+    EmrtdUI::showFatalError();
     exit();
 }
 

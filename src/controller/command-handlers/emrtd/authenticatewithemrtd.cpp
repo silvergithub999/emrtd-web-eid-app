@@ -94,7 +94,7 @@ QVariantMap createAuthenticationToken(
 }
 
 QVariantMap AuthenticateWithEmrtd::onConfirm(
-    WebEidUI* window,
+    EmrtdUI* window,
     const electronic_id::CardInfo& cardInfo
 ) {
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
@@ -140,7 +140,7 @@ QByteArray AuthenticateWithEmrtd::readDG15(
         .toBase64(BASE64_OPTIONS);
 }
 
-void AuthenticateWithEmrtd::connectSignals(const WebEidUI* window) {
+void AuthenticateWithEmrtd::connectSignals(const EmrtdUI* window) {
     EmrtdCertificateReader::connectSignals(window);
     // connect(this, &AuthenticateEmrtd::verifyPinFailed, window, &WebEidUI::onVerifyPinFailed);
 }

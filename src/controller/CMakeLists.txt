@@ -51,6 +51,7 @@ add_library(controller STATIC
         threads/commandhandlerconfirmthreademrtd.hpp
         threads/commandhandlerrunthreademrtd.hpp
     ui.hpp
+        emrtdui.hpp
     utils.hpp
     writeresponse.cpp
     writeresponse.hpp

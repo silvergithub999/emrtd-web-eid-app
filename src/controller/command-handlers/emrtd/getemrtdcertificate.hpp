@@ -34,7 +34,7 @@ class GetEmrtdCertificate : public EmrtdCertificateReader {
 public:
     GetEmrtdCertificate(const CommandWithArguments& cmd);
 
-   QVariantMap onConfirm(WebEidUI* window,
+   QVariantMap onConfirm(EmrtdUI* window,
                           const electronic_id::CardInfo& cardInfo) override;
 
 private:

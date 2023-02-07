@@ -89,7 +89,7 @@ private:
     // Key of card event monitor thread in childThreads map.
     uintptr_t cardEventMonitorThreadKey = 0;
     // As the Qt::WA_DeleteOnClose flag is set, the dialog is deleted automatically.
-    observer_ptr<WebEidUI> window = nullptr;
+    observer_ptr<EmrtdUI> window = nullptr;
     QVariantMap _result;
     bool isInStdinMode = true;
 };

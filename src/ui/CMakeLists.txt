@@ -22,10 +22,14 @@ add_library(ui STATIC
     certificatewidget.hpp
     punycode.hpp
     ui.cpp
+        emrtdui.cpp
     webeiddialog.cpp
     webeiddialog.hpp
+        emrtddialog.cpp
+        emrtddialog.hpp
     web-eid-resources.qrc
     dialog.ui
+        dialog-emrtd.ui
 )
 set_target_properties(ui PROPERTIES
     AUTORCC ON

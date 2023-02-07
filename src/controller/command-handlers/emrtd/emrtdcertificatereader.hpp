@@ -27,6 +27,8 @@
 
 #include <QUrl>
 
+#include "../../emrtdui.hpp"
+
 #include "application.hpp"
 
 using namespace electronic_id;
@@ -39,7 +41,7 @@ public:
    explicit EmrtdCertificateReader(const CommandWithArguments& cmd);
 
    void run(const std::vector<electronic_id::CardInfo::ptr>& cards) override;
-   void connectSignals(const WebEidUI* window) override;
+   void connectSignals(const EmrtdUI* window) override;
 
 protected:
     /*

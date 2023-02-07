@@ -22,55 +22,37 @@
 
 #pragma once
 
-#include "ui.hpp"
+#include "emrtdui.hpp"
 
 #include <QCloseEvent>
 
-// clang-format off
-/**
- * The WebEidDialog class contains all UI elements of the web-eid application.
- *
- * The dialog consists of OK/Cancel buttons and a QStackedWidget with the following pages:
- * - waiting
- * - message,
- * - select certificate,
- * - pin input.
- */
-// clang-format on
-class WebEidDialog final : public WebEidUI
+class EmrtdDialog final : public EmrtdUI
 {
     Q_OBJECT
 
 public:
-    enum class Page { WAITING, ALERT, SELECT_CERTIFICATE, PIN_INPUT, ABOUT };
+    enum class Page { WAITING, ALERT, AUTHENTICATE_WITH_EMRTD, ABOUT };
 
-    explicit WebEidDialog(QWidget* parent = nullptr);
-    ~WebEidDialog() final;
+    explicit EmrtdDialog(QWidget* parent = nullptr);
+    ~EmrtdDialog() final;
 
     void showWaitingForCardPage(const CommandType commandType) final;
-    QString getPin() final;
 
     static void showAboutPage();
     static void showFatalErrorPage();
 
     // slots
     void onSmartCardStatusUpdate(const RetriableError status) final;
-    void onMultipleCertificatesReady(
-        const QUrl& origin,
-        const std::vector<CardCertificateAndPinInfo>& cardCertAndPinInfos) final;
-    void onSingleCertificateReady(const QUrl& origin,
-                                  const CardCertificateAndPinInfo& cardCertAndPinInfo) final;
 
     void onRetry(const RetriableError error) final;
 
-    void onSigningCertificateMismatch() final;
-    void onVerifyPinFailed(const electronic_id::VerifyPinFailed::Status status,
-                           const qint8 retriesLeft) final;
     void quit() final
     {
         closeUnconditionally = true;
         close();
     }
+
+    void onAuthenticateWithEmrtd(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo);
 
 signals:
     void languageChange();
@@ -84,30 +66,22 @@ private:
         if (closeUnconditionally) {
             event->accept();
         } else {
-            WebEidUI::closeEvent(event);
+            EmrtdUI::closeEvent(event);
         }
     }
-
-    void connectOkToCachePinAndEmitSelectedCertificate(const CardCertificateAndPinInfo& certAndPin);
 
     void onRetryImpl(const std::function<QString()>& text);
 
     void setTrText(QWidget* label, const std::function<QString()>& text);
-    void
-    setupCertificateAndPinInfo(const std::vector<CardCertificateAndPinInfo>& cardCertAndPinInfos);
-    void setupPinPrompt(const PinInfo& pinInfo);
-    void setupPinPadProgressBarAndEmitWait(const CardCertificateAndPinInfo& certAndPin);
-    void setupPinInput(const CardCertificateAndPinInfo& certAndPin);
+
     void setupOK(const std::function<void()>& func, const std::function<QString()>& text = {},
                  bool enabled = false);
-    void displayPinBlockedError();
 
-    void showPinInputWarning(bool show);
     void resizeHeight();
 
-    Q_DISABLE_COPY(WebEidDialog)
-    WebEidDialog(WebEidDialog&&) = delete;
-    WebEidDialog& operator=(WebEidDialog&&) = delete;
+    Q_DISABLE_COPY(EmrtdDialog)
+    EmrtdDialog(EmrtdDialog&&) = delete;
+    EmrtdDialog& operator=(EmrtdDialog&&) = delete;
 
     QPixmap pixmap(QLatin1String name) const;
     std::tuple<QString, QString, QPixmap> retriableErrorToTextTitleAndIcon(RetriableError error);
@@ -116,6 +90,5 @@ private:
     Private* ui;
 
     CommandType currentCommand = CommandType::NONE;
-    QString pin;
     bool closeUnconditionally = false;
 };

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui.hpp"
+#include "emrtdui.hpp"
 
 /** Interface for command handlers that implement the actual work the application does, like get
  * certificate, authenticate and sign. */
@@ -34,8 +34,8 @@ public:
     using ptr = std::unique_ptr<CommandHandlerEmrtd>;
 
     virtual void run(const std::vector<electronic_id::CardInfo::ptr>& cards) = 0;
-    virtual void connectSignals(const WebEidUI* window) = 0;
-    virtual QVariantMap onConfirm(WebEidUI* window,
+    virtual void connectSignals(const EmrtdUI* window) = 0;
+    virtual QVariantMap onConfirm(EmrtdUI* window,
                                   const electronic_id::CardInfo& cardInfo) = 0;
 
     CommandType commandType() const { return command.first; }
@@ -43,8 +43,7 @@ public:
 signals:
     void retry(const RetriableError error);
 
-    // TODO: rename
-    void onEmrtdCommand(const QUrl& origin, electronic_id::CardInfo::ptr cardInfo);
+    void onAuthenticateWithEmrtd(const QUrl& origin, electronic_id::CardInfo::ptr cardInfo);
 
 protected:
     CommandHandlerEmrtd(const CommandWithArguments& cmd) : command(cmd) {}

@@ -20,14 +20,28 @@
  * SOFTWARE.
  */
 
-#include "ui.hpp"
-#include "mock-ui.hpp"
+#include "emrtddialog.hpp"
 
-WebEidUI* WebEidUI::createAndShowDialog(const CommandType)
+EmrtdUI* EmrtdUI::createAndShowDialog(const CommandType command)
 {
-    static MockUI instance;
-    return &instance;
+    auto dialog = new EmrtdDialog {};
+    // close() deletes the dialog automatically if the Qt::WA_DeleteOnClose flag is set.
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+    dialog->showWaitingForCardPage(command);
+    dialog->activateWindow();
+    dialog->show();
+    dialog->raise();
+
+    return dialog;
 }
 
-void WebEidUI::showAboutPage() {}
-void WebEidUI::showFatalError() {}
+void EmrtdUI::showAboutPage()
+{
+    EmrtdDialog::showAboutPage();
+}
+
+void EmrtdUI::showFatalError()
+{
+    EmrtdDialog::showFatalErrorPage();
+}

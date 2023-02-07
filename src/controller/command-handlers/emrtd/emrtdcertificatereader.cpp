@@ -16,14 +16,14 @@ void EmrtdCertificateReader::run(const std::vector<CardInfo::ptr>& cards)
 {
     REQUIRE_NOT_EMPTY_CONTAINS_NON_NULL_PTRS(cards);
 
-    emit onEmrtdCommand(origin, cards[0]);
+    emit onAuthenticateWithEmrtd(origin, cards[0]);
 }
 
-void EmrtdCertificateReader::connectSignals(const WebEidUI* window)
+void EmrtdCertificateReader::connectSignals(const EmrtdUI* window)
 {
     window->disconnect(this);
-    connect(this, &EmrtdCertificateReader::onEmrtdCommand, window,
-            &WebEidUI::onEmrtdCommand);
+    connect(this, &EmrtdCertificateReader::onAuthenticateWithEmrtd, window,
+            &EmrtdUI::onAuthenticateWithEmrtd);
 }
 
 void EmrtdCertificateReader::validateAndStoreOrigin(const QVariantMap& arguments)
