@@ -73,21 +73,22 @@ QVariantMap GetEmrtdCertificate::onConfirm(EmrtdUI* /* window */,
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(mrz, cardInfo.eid().smartcard());
 
-    const auto dg15 = readDG15(smo, cardInfo.eid().smartcard());
+    const auto dg15 = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
 
     return QVariantMap {
         {"certificate", dg15},
     };
 }
 
-QByteArray GetEmrtdCertificate::readDG15(
+// TODO: same function as in authenticatewithemrtd
+QByteArray GetEmrtdCertificate::readFile(
     SecureMessagingObject& smo,
-    const pcsc_cpp::SmartCard& card
+    const pcsc_cpp::SmartCard& card,
+    byte_vector fileName
 )
 {
-    // TODO: same code as in authenticatewithemrtd.cpp/hpp
-    byte_vector dg15 = smo.readFile(card, {0x01, 0x0f});
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(dg15.data()),
-                                   int(dg15.size()))
+    byte_vector fileData = smo.readFile(card, fileName);
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
+                                   int(fileData.size()))
         .toBase64(BASE64_OPTIONS);
 }

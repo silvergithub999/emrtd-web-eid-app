@@ -164,11 +164,9 @@ void ControllerEmrtd::connectOkCancelWaitingForMrz()
 {
     REQUIRE_NON_NULL(window)
 
-    // TODO: wrong type is accepted here
     connect(window, &EmrtdUI::accepted, this, &ControllerEmrtd::onDialogOK);
     connect(window, &EmrtdUI::rejected, this, &ControllerEmrtd::onDialogCancel);
     connect(window, &EmrtdUI::failure, this, &ControllerEmrtd::onCriticalFailure);
-    connect(window, &EmrtdUI::runEmrtd, this, &ControllerEmrtd::onConfirmCommandHandler);
 }
 
 void ControllerEmrtd::onCardsAvailable(const std::vector<electronic_id::CardInfo::ptr>& availableCards)

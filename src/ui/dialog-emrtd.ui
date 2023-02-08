@@ -134,15 +134,15 @@ background-color: #113F8E;
 border: 1px solid #003168;
 border-radius: 2px;
 }
-#waitingPageTitleLabel, #messagePageTitleLabel, #pinInputPageTitleLabel, #aboutPageLabel {
+#waitingPageTitleLabel, #messagePageTitleLabel, #authenticationPageTitleLabel, #aboutPageLabel {
 color: #003168;
 font-size: 32px;
 font-weight: bold;
 }
-#selectCertificateDescriptionLabel, #pinInputDescriptionLabel {
+#selectCertificateDescriptionLabel, #authenticationDescriptionLabel {
 max-height: 40px;
 }
-#selectCertificateOriginLabel, #pinInputOriginLabel {
+#authenticationOriginLabel {
 color: #003168;
 font-weight: bold;
 max-height: 20px;
@@ -170,6 +170,9 @@ color: #003168;
 }
 #aboutVersion {
 color: #76767B;
+}
+#authenticationItemList {
+border-style: none;
 }
 #selectAnotherCertificate {
 color: #113F8E;
@@ -405,7 +408,7 @@ height: 24px;
       </layout>
      </widget>
      <widget class="QWidget" name="authenticatingWithEmrtdPage">
-      <layout class="QVBoxLayout" name="pinInputPageLayout">
+      <layout class="QVBoxLayout" name="authenticationPageLayout">
        <property name="spacing">
         <number>20</number>
        </property>
@@ -422,62 +425,55 @@ height: 24px;
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="pinInputPageTitleLabel">
+        <widget class="QLabel" name="authenticationPageTitleLabel">
          <property name="focusPolicy">
           <enum>Qt::TabFocus</enum>
          </property>
          <property name="text">
-          <string>Authenticate</string>
+          <string>Authenticate with EMRTD</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QGridLayout" name="pinInputLabelLayout" columnstretch="0,1">
+        <layout class="QGridLayout" name="authenticationLabelLayout" columnstretch="0,0">
          <property name="horizontalSpacing">
           <number>10</number>
          </property>
          <property name="verticalSpacing">
           <number>9</number>
          </property>
+         <item row="2" column="1">
+          <widget class="QLabel" name="authenticationOriginLabel">
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="pinInputDescriptionLabel">
+          <widget class="QLabel" name="authenticationDescriptionLabel">
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
            <property name="text">
-            <string>By authenticating, I agree to the transfer of my name and personal identification code to the service provider.</string>
+            <string>By authenticating, I agree to the transfer the following data to the service provider:</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="pinInputOriginLabelIcon">
+         <item row="2" column="0">
+          <widget class="QLabel" name="authenticationOriginLabelIcon">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="pixmap">
             <pixmap resource="web-eid-resources.qrc">:/images/origin.svg</pixmap>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="pinInputOriginLabel">
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="pinInputPageContentLayout">
-         <property name="spacing">
-          <number>8</number>
-         </property>
-         <item>
-          <widget class="CertificateWidget" name="pinInputCertificateInfo" native="true"/>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="selectAnotherCertificateLayout"/>
+         <item row="1" column="0">
+          <widget class="QListWidget" name="authenticationItemList"/>
          </item>
         </layout>
        </item>
@@ -725,12 +721,6 @@ height: 24px;
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>CertificateWidget</class>
-   <extends>QWidget</extends>
-   <header>certificatewidget.hpp</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QSvgWidget</class>
    <extends>QWidget</extends>

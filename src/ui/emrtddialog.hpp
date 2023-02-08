@@ -25,6 +25,7 @@
 #include "emrtdui.hpp"
 
 #include <QCloseEvent>
+#include <QListWidget>
 
 class EmrtdDialog final : public EmrtdUI
 {
@@ -78,6 +79,8 @@ private:
                  bool enabled = true);
 
     void resizeHeight();
+
+    void insertItemToQListWidget(QListWidget* list, const QString& text);
 
     Q_DISABLE_COPY(EmrtdDialog)
     EmrtdDialog(EmrtdDialog&&) = delete;

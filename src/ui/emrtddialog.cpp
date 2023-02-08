@@ -77,7 +77,7 @@ EmrtdDialog::EmrtdDialog(QWidget* parent) : EmrtdUI(parent), ui(new Private)
         QFile f(QStringLiteral(":dark.qss"));
         if (f.open(QFile::ReadOnly | QFile::Text)) {
             setStyleSheet(styleSheet() + QTextStream(&f).readAll());
-            ui->pinInputOriginLabelIcon->setPixmap(pixmap("origin"_L1));
+            ui->authenticationOriginLabel->setPixmap(pixmap("origin"_L1));
             ui->cardChipIcon->setPixmap(pixmap("no-id-card"_L1));
             ui->fatalErrorIcon->setPixmap(pixmap("fatal"_L1));
             ui->aboutIcon->setPixmap(pixmap("fatal"_L1));
@@ -361,29 +361,25 @@ EmrtdDialog::retriableErrorToTextTitleAndIcon(const RetriableError error)
 // TODO: probably needs a similar thing like web eid code has: onMultipleCertificatesReady
 void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo)
 {
-    // TODO:
-    // TODO: SWITCH TO dialog-emrtd.ui
-    // TODO:
+    ui->authenticationOriginLabel->setText(fromPunycode(origin));
+
     switch (currentCommand) {
     case CommandType::GET_EMRTD_SIGNING_CERTIFICATE:
-        emit runEmrtd(cardInfo);
+        emit accepted(cardInfo);
         break;
     case CommandType::AUTHENTICATE_WITH_EMRTD:
-        setTrText(ui->pinInputPageTitleLabel, [] { return tr("Authenticate"); });
-        setTrText(ui->pinInputDescriptionLabel, [] {
-            return tr("By authenticating, I agree to the transfer of my name and personal "
-                      "identification code to the service provider.");
+        setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with EMRTD"); });
+        setTrText(ui->authenticationDescriptionLabel, [] {
+            return tr("By authenticating, I agree to the transfer the following data to the service provider:");
         });
-        // TODO: rename runEmrtd -> accepted
-        setupOK([this, cardInfo] { emit runEmrtd(cardInfo); });
-        /*
-        setTrText(ui->pinTitleLabel, [useExternalPinDialog] {
-            return useExternalPinDialog
-                ? tr("Please enter PIN for authentication in the PIN dialog window that opens.")
-                : tr("Enter PIN1 for authentication");
-        });
-         */
-        // emit runEmrtd(cardInfo);
+
+        setupOK([this, cardInfo] { emit accepted(cardInfo); });
+        insertItemToQListWidget(ui->authenticationItemList, "Name");
+        insertItemToQListWidget(ui->authenticationItemList, "ID code");
+        insertItemToQListWidget(ui->authenticationItemList, "Document number");
+        insertItemToQListWidget(ui->authenticationItemList, "Birthday");
+        insertItemToQListWidget(ui->authenticationItemList, "Birthplace");
+        insertItemToQListWidget(ui->authenticationItemList, "Photo");
         break;
     default:
         emit failure(QStringLiteral("Only AUTHENTICATE_WITH_EMRTD, GET_EMRTD_SIGNING_CERTIFICATE allowed"));
@@ -392,3 +388,16 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     ui->pageStack->setCurrentIndex(int(Page::AUTHENTICATE_WITH_EMRTD));
 }
+
+void EmrtdDialog::insertItemToQListWidget(
+    QListWidget* list,
+    const QString& text)
+{
+    QListWidgetItem* item = new QListWidgetItem("- " + text);
+    // Removing the selectable flag from the list item
+    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
+    list->insertItem(4, item);
+}
+
+

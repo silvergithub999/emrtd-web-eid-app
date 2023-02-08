@@ -79,11 +79,17 @@ AuthenticateWithEmrtd::AuthenticateWithEmrtd(const CommandWithArguments& cmd) : 
 
 QVariantMap createAuthenticationToken(
     const QByteArray& signature,
-    const QByteArray& dg15,
+    const QByteArray& mrzEmrtd,
+    const QByteArray& certificate,
+    const QByteArray& photo,
+    const QByteArray& documentSecurityObject,
     const QString& signatureAlgorithm
 ) {
     return QVariantMap {
-        {"unverifiedCertificate", dg15},
+        {"unverifiedCertificate", certificate},
+        {"unverifiedPhoto", photo},
+        {"unverifiedMrz", mrzEmrtd},
+        {"unverifiedDocumentSecurityObject", documentSecurityObject},
         {"algorithm", signatureAlgorithm},
         {"signature", signature},
         {"format", QStringLiteral("web-eid:1.0")},
@@ -106,37 +112,33 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(mrz, cardInfo.eid().smartcard());
 
-    const auto dg14 = readDG14(smo, cardInfo.eid().smartcard());
-    const auto dg15 = readDG15(smo, cardInfo.eid().smartcard());
+    // EF.COM content: {b'\x01': 'EF.DG1', b'\x02': 'EF.DG2', b'\x03': 'EF.DG3', b'\x0e': 'EF.DG14', b'\x0f': 'EF.DG15'}
+    const auto mrzEmrtd = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
+    const auto photo = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
+    const auto certificate = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
+    const auto documentSecurityObject = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
     const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
 
     return createAuthenticationToken(
         signature,
-        dg15,
+        mrzEmrtd,
+        certificate,
+        photo,
+        documentSecurityObject,
         "RS256"
         );
 }
 
-QByteArray AuthenticateWithEmrtd::readDG14(
+QByteArray AuthenticateWithEmrtd::readFile(
     SecureMessagingObject& smo,
-    const pcsc_cpp::SmartCard& card
+    const pcsc_cpp::SmartCard& card,
+    byte_vector fileName
     )
 {
-    byte_vector dg14 = smo.readFile(card, {0x01, 0x0e});
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(dg14.data()),
-                            int(dg14.size()))
-        .toBase64(BASE64_OPTIONS);
-}
-
-QByteArray AuthenticateWithEmrtd::readDG15(
-    SecureMessagingObject& smo,
-    const pcsc_cpp::SmartCard& card
-    )
-{
-    byte_vector dg15 = smo.readFile(card, {0x01, 0x0f});
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(dg15.data()),
-                                   int(dg15.size()))
+    byte_vector fileData = smo.readFile(card, fileName);
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
+                            int(fileData.size()))
         .toBase64(BASE64_OPTIONS);
 }
 

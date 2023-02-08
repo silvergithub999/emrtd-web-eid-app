@@ -37,9 +37,9 @@ public:
    QVariantMap onConfirm(EmrtdUI* window,
                           const electronic_id::CardInfo& cardInfo) override;
 
-private:
-   QByteArray readDG15(
+   QByteArray readFile(
        SecureMessagingObject& smo,
-       const pcsc_cpp::SmartCard& card
+       const pcsc_cpp::SmartCard& card,
+       byte_vector fileName
    );
 };

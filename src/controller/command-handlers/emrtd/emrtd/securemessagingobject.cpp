@@ -198,8 +198,8 @@ byte_vector SecureMessagingObject::processResponseData(const byte_vector& respon
 }
 
 byte_vector SecureMessagingObject::readFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName) {
-    const auto length = readDataLengthFromAsn1(card, fileName);
-    return readBinary(card, length, 0xb5);
+    auto length = readDataLengthFromAsn1(card, fileName);
+    return readBinary(card, length, 0x32);
 }
 
 size_t SecureMessagingObject::readDataLengthFromAsn1(const pcsc_cpp::SmartCard& card, const byte_vector& fileName)
@@ -216,9 +216,11 @@ size_t SecureMessagingObject::readDataLengthFromAsn1(const pcsc_cpp::SmartCard& 
         pcsc_cpp::CommandApdu{0x00, 0xB0, 0x00, 0x00, byte_vector(0), 0x04}
     );
 
-    int length = asn1_value_length(responseData);
-    length += 4;
-    return length;
+    int prefixLength = responseData[1] > 128 ? 4 : 2;
+
+    int contentLength = asn1_value_length(responseData);
+
+    return prefixLength + contentLength;
 }
 
 byte_vector SecureMessagingObject::readBinary(const pcsc_cpp::SmartCard& card, const size_t length, const size_t blockLength)

@@ -51,6 +51,9 @@ private:
        const pcsc_cpp::SmartCard& card
    );
 
-   QByteArray readDG14(SecureMessagingObject& smo, const pcsc_cpp::SmartCard& card);
-   QByteArray readDG15(SecureMessagingObject& smo, const pcsc_cpp::SmartCard& card);
+   QByteArray readFile(
+       SecureMessagingObject& smo,
+       const pcsc_cpp::SmartCard& card,
+       byte_vector fileName
+   );
 };
