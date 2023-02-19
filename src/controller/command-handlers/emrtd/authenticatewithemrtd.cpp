@@ -80,13 +80,13 @@ AuthenticateWithEmrtd::AuthenticateWithEmrtd(const CommandWithArguments& cmd) : 
 QVariantMap createAuthenticationToken(
     const QByteArray& signature,
     const QByteArray& mrzEmrtd,
-    const QByteArray& certificate,
+    const QByteArray& publicKeyInfo,
     const QByteArray& photo,
     const QByteArray& documentSecurityObject,
     const QString& signatureAlgorithm
 ) {
     return QVariantMap {
-        {"unverifiedCertificate", certificate},
+        {"unverifiedPublicKeyInfo", publicKeyInfo},
         {"unverifiedPhoto", photo},
         {"unverifiedMrz", mrzEmrtd},
         {"unverifiedDocumentSecurityObject", documentSecurityObject},
@@ -115,7 +115,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     // EF.COM content: {b'\x01': 'EF.DG1', b'\x02': 'EF.DG2', b'\x03': 'EF.DG3', b'\x0e': 'EF.DG14', b'\x0f': 'EF.DG15'}
     const auto mrzEmrtd = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
     const auto photo = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
-    const auto certificate = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
+    const auto publicKeyInfo = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
     const auto documentSecurityObject = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
     const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
@@ -123,7 +123,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     return createAuthenticationToken(
         signature,
         mrzEmrtd,
-        certificate,
+        publicKeyInfo,
         photo,
         documentSecurityObject,
         "RS256"
