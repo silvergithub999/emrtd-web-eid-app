@@ -132,7 +132,6 @@ CommandWithArgumentsPtr Application::parseArgs()
 
     static const auto COMMANDS = "'" + CMDLINE_GET_SIGNING_CERTIFICATE + "', '"
         + CMDLINE_AUTHENTICATE + "', '" + CMDLINE_SIGN + "', '"
-        + CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE + "', '"
         + CMDLINE_AUTHENTICATE_WITH_EMRTD + "'.";
 
     parser.addPositionalArgument(
@@ -152,14 +151,12 @@ CommandWithArgumentsPtr Application::parseArgs()
         const auto& command = args.first();
         const auto& arguments = args.at(1);
 
-        isEmrtdCommand = command == CMDLINE_AUTHENTICATE_WITH_EMRTD
-            || command == CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE;
+        isEmrtdCommand = command == CMDLINE_AUTHENTICATE_WITH_EMRTD;
         
         if (
             command == CMDLINE_GET_SIGNING_CERTIFICATE
             || command == CMDLINE_AUTHENTICATE
             || command == CMDLINE_AUTHENTICATE_WITH_EMRTD
-            || command == CMDLINE_GET_EMRTD_SIGNING_CERTIFICATE
             || command == CMDLINE_SIGN
         ) {
             // TODO: add command-specific argument validation

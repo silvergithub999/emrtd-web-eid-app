@@ -17,8 +17,6 @@ add_library(controller STATIC
         command-handlers/emrtd/emrtdcertificatereader.hpp
         command-handlers/emrtd/authenticatewithemrtd.cpp
         command-handlers/emrtd/authenticatewithemrtd.hpp
-        command-handlers/emrtd/getemrtdcertificate.cpp
-        command-handlers/emrtd/getemrtdcertificate.hpp
         command-handlers/emrtd/emrtd/bac.hpp
         command-handlers/emrtd/emrtd/bac.cpp
         command-handlers/emrtd/emrtd/emrtdutils.hpp

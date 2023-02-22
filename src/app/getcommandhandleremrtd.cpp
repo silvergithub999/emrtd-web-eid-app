@@ -22,7 +22,6 @@
 
 #include "../controller/commandhandleremrtd.hpp"
 
-#include "../controller/command-handlers/emrtd/getemrtdcertificate.hpp"
 #include "../controller/command-handlers/emrtd/authenticatewithemrtd.hpp"
 
 // TODO:
@@ -35,8 +34,6 @@ CommandHandlerEmrtd::ptr getCommandHandlerEmrtd(const CommandWithArguments& cmd)
     auto cmdCopy = CommandWithArguments {cmdType, cmd.second};
 
     switch (cmdType) {
-    case CommandType::GET_EMRTD_SIGNING_CERTIFICATE:
-        return std::make_unique<GetEmrtdCertificate>(cmdCopy);
     case CommandType::AUTHENTICATE_WITH_EMRTD:
         return std::make_unique<AuthenticateWithEmrtd>(cmdCopy);
     default:

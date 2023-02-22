@@ -92,9 +92,9 @@ QVariantMap createAuthenticationToken(
         {"unverifiedDocumentSecurityObject", documentSecurityObject},
         {"algorithm", signatureAlgorithm},
         {"signature", signature},
-        {"format", QStringLiteral("web-eid:1.0")},
+        {"format", QStringLiteral("web-eid:1.0-emrtd")},
         {"appVersion",
-         QStringLiteral("https://web-eid.eu/web-eid-app/releases/%1")
+         QStringLiteral("https://web-eid.eu/web-eid-app/releases/%1-emrtd")
              .arg(qApp->applicationVersion())},
     };
 }
@@ -126,7 +126,8 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
         publicKeyInfo,
         photo,
         documentSecurityObject,
-        "RS256"
+        // TODO: get it from somewhere, should not be hardcoded.
+        "TODO"
         );
 }
 
