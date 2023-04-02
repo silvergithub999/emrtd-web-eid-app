@@ -25,7 +25,7 @@ SecureMessagingObject BasicAccessControl::establishBacSessionKeys(
     const byte_vector& secret,
     const pcsc_cpp::SmartCard& card
 ) {
-    byte_vector secretDigest = calculateDigest(HashAlgorithm::SHA1, secret);
+    byte_vector secretDigest = calculateSha1Digest(secret);
 
     byte_vector baKeySeed(secretDigest.begin(), secretDigest.begin() + 16);
 
@@ -113,15 +113,9 @@ byte_vector BasicAccessControl::computeKey(const byte_vector& keySeed, const Key
     byte_vector D = combineByteVectors({keySeed, c});
 
     if (alg == AES256) {
-        return calculateDigest(HashAlgorithm::SHA256, D);
+        throw std::runtime_error("AES256 currently not supported");
     } else if (alg == DES3) {
-        // TODO: no idea if this block is correct
-        // hash_of_D = hashlib.sha1(D).digest()
-        // key_a = hash_of_D[:8]
-        // key_b = hash_of_D[8:16]
-        // return DES3.adjust_key_parity(key_a + key_b)  # set parity bits
-
-        const byte_vector hashD = calculateDigest(HashAlgorithm::SHA1, D);
+        const byte_vector hashD = calculateSha1Digest(D);
         byte_vector r(hashD.begin(), hashD.end() + 16);
         DES_cblock keyA;
         DES_cblock keyB;
@@ -151,4 +145,15 @@ byte_vector BasicAccessControl::getRandomBytes(int n) {
     byte_vector vec(n);
     std::generate(vec.begin(), vec.end(), std::ref(random));
     return vec;
+}
+
+byte_vector BasicAccessControl::calculateSha1Digest(const pcsc_cpp::byte_vector& data) {
+    pcsc_cpp::byte_vector digest(size_t(EVP_MAX_MD_SIZE));
+    const EVP_MD* md = EVP_sha1();
+    unsigned int size = 0;
+    if (EVP_Digest(data.data(), data.size(), digest.data(), &size, md, nullptr) != 1) {
+        throw std::runtime_error("calculateDigest: EVP_Digest failed");
+    }
+    digest.resize(size);
+    return digest;
 }

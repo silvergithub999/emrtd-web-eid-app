@@ -24,9 +24,9 @@
 
 #include "emrtdcertificatereader.hpp"
 #include "../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
-#include "emrtd/securemessagingobject.hpp"
+#include "securemessagingobject.hpp"
 #include "../../commandhandler.hpp" // TODO: errors used
-#include "../emrtd/emrtd/bac.hpp"
+#include "../emrtd/emrtd-utils/bac.hpp"
 #include "../../certandpininfo.hpp"
 
 using byte_vector = std::vector<unsigned char>;
@@ -52,6 +52,12 @@ private:
    );
 
    QByteArray readFile(
+       SecureMessagingObject& smo,
+       const pcsc_cpp::SmartCard& card,
+       byte_vector fileName
+   );
+
+   QByteArray readFileAndConvertToBase64(
        SecureMessagingObject& smo,
        const pcsc_cpp::SmartCard& card,
        byte_vector fileName

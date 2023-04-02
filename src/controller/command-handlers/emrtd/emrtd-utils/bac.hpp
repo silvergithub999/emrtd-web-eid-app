@@ -8,7 +8,7 @@
 #include <vector>
 #include "../../../../../lib/libelectronic-id/include/electronic-id/enums.hpp"
 #include "../../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
-#include "securemessagingobject.hpp"
+#include "../securemessagingobject.hpp"
 
 using byte_vector = std::vector<unsigned char>;
 
@@ -31,6 +31,8 @@ private:
     static byte_vector computeKey(const byte_vector& keySeed, const KeyType keyType, const Alg alg);
 
     static byte_vector getRandomBytes(int n);
+
+    static byte_vector calculateSha1Digest(const pcsc_cpp::byte_vector& data);
 };
 
 #endif // WEB_EID_APP_BAC_H

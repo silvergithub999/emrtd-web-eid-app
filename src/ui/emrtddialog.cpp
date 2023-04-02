@@ -393,7 +393,7 @@ void EmrtdDialog::insertItemToQListWidget(
     QListWidget* list,
     const QString& text)
 {
-    QListWidgetItem* item = new QListWidgetItem("- " + text);
+    QListWidgetItem* item = new QListWidgetItem(text);
     // Removing the selectable flag from the list item
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 

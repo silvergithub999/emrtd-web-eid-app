@@ -17,12 +17,12 @@ add_library(controller STATIC
         command-handlers/emrtd/emrtdcertificatereader.hpp
         command-handlers/emrtd/authenticatewithemrtd.cpp
         command-handlers/emrtd/authenticatewithemrtd.hpp
-        command-handlers/emrtd/emrtd/bac.hpp
-        command-handlers/emrtd/emrtd/bac.cpp
-        command-handlers/emrtd/emrtd/emrtdutils.hpp
-        command-handlers/emrtd/emrtd/asn1utils.hpp
-        command-handlers/emrtd/emrtd/securemessagingobject.hpp
-        command-handlers/emrtd/emrtd/securemessagingobject.cpp
+        command-handlers/emrtd/emrtd-utils/bac.hpp
+        command-handlers/emrtd/emrtd-utils/bac.cpp
+        command-handlers/emrtd/emrtd-utils/emrtdutils.hpp
+        command-handlers/emrtd/emrtd-utils/asn1utils.hpp
+        command-handlers/emrtd/securemessagingobject.hpp
+        command-handlers/emrtd/securemessagingobject.cpp
         controlleremrtd.cpp
         controlleremrtd.hpp
         commandhandleremrtd.hpp

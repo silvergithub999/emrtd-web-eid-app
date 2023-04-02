@@ -88,7 +88,7 @@ QVariantMap createAuthenticationToken(
     return QVariantMap {
         {"unverifiedPublicKeyInfo", publicKeyInfo},
         {"unverifiedPhoto", photo},
-        {"unverifiedMrz", mrzEmrtd},
+        {"unverifiedMrz", QString::fromUtf8(mrzEmrtd)},
         {"unverifiedDocumentSecurityObject", documentSecurityObject},
         {"algorithm", signatureAlgorithm},
         {"signature", signature},
@@ -105,18 +105,17 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
 ) {
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
 
-    byte_vector mrz = readInfoFromIdAppletAndGetMrz(cardInfo.eid().smartcard());
+    byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo.eid().smartcard());
 
     selectEmrtdApplet(cardInfo.eid().smartcard());
 
     SecureMessagingObject smo =
-        BasicAccessControl::establishBacSessionKeys(mrz, cardInfo.eid().smartcard());
+        BasicAccessControl::establishBacSessionKeys(secret, cardInfo.eid().smartcard());
 
-    // EF.COM content: {b'\x01': 'EF.DG1', b'\x02': 'EF.DG2', b'\x03': 'EF.DG3', b'\x0e': 'EF.DG14', b'\x0f': 'EF.DG15'}
     const auto mrzEmrtd = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
-    const auto photo = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
-    const auto publicKeyInfo = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
-    const auto documentSecurityObject = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
+    const auto photo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
+    const auto publicKeyInfo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
+    const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
     const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
 
@@ -126,8 +125,8 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
         publicKeyInfo,
         photo,
         documentSecurityObject,
-        // TODO: get it from somewhere, should not be hardcoded.
-        "TODO"
+        // TODO
+        "EC256"
         );
 }
 
@@ -135,17 +134,25 @@ QByteArray AuthenticateWithEmrtd::readFile(
     SecureMessagingObject& smo,
     const pcsc_cpp::SmartCard& card,
     byte_vector fileName
-    )
+)
 {
     byte_vector fileData = smo.readFile(card, fileName);
     return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
-                            int(fileData.size()))
+                                   int(fileData.size()));
+}
+
+QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
+    SecureMessagingObject& smo,
+    const pcsc_cpp::SmartCard& card,
+    byte_vector fileName
+)
+{
+    return readFile(smo, card, fileName)
         .toBase64(BASE64_OPTIONS);
 }
 
 void AuthenticateWithEmrtd::connectSignals(const EmrtdUI* window) {
     EmrtdCertificateReader::connectSignals(window);
-    // connect(this, &AuthenticateEmrtd::verifyPinFailed, window, &WebEidUI::onVerifyPinFailed);
 }
 
 QByteArray AuthenticateWithEmrtd::createSignature(
@@ -162,11 +169,7 @@ QByteArray AuthenticateWithEmrtd::createSignature(
     const auto hashToBeSignedQBytearray =
         QCryptographicHash::hash(originHash + challengeNonceHash, hashAlgo);
 
-    byte_vector todo(
-        hashToBeSignedQBytearray.begin(), hashToBeSignedQBytearray.end());
-
-    const auto hashToBeSigned =
-        pcsc_cpp::byte_vector {hashToBeSignedQBytearray.cbegin(), hashToBeSignedQBytearray.cend()};
+    const byte_vector hashToBeSigned(hashToBeSignedQBytearray.cbegin(), hashToBeSignedQBytearray.cend());
 
     // Card can sign only 8 bytes
     byte_vector shortenedUnsignedToken(hashToBeSigned.begin(), hashToBeSigned.begin() + 8);
