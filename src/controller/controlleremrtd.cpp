@@ -126,8 +126,7 @@ void ControllerEmrtd::startCommandExecution()
 
     connect(this, &ControllerEmrtd::statusUpdate, window, &EmrtdUI::onSmartCardStatusUpdate);
 
-    // TODO: here should take the MRZ info
-    connectOkCancelWaitingForMrz();
+    connectOkCancel();
 
     // Finally, start the thread to wait for card insertion after everything is wired up.
     waitForCardThread->start();
@@ -160,7 +159,7 @@ void ControllerEmrtd::saveChildThreadPtrAndConnectFailureFinish(ControllerChildT
     });
 }
 
-void ControllerEmrtd::connectOkCancelWaitingForMrz()
+void ControllerEmrtd::connectOkCancel()
 {
     REQUIRE_NON_NULL(window)
 

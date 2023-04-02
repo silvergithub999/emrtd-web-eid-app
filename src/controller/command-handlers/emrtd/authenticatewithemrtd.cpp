@@ -103,6 +103,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     EmrtdUI* window,
     const electronic_id::CardInfo& cardInfo
 ) {
+    // TODO: add transaction guard
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
 
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo.eid().smartcard());

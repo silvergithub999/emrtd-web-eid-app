@@ -71,7 +71,7 @@ public: // slots
 private:
     void startCommandExecution();
     void runCommandHandler(const std::vector<electronic_id::CardInfo::ptr>& availableCards);
-    void connectOkCancelWaitingForMrz();
+    void connectOkCancel();
     void connectRetry(const ControllerChildThread* childThread);
     void saveChildThreadPtrAndConnectFailureFinish(ControllerChildThread* childThread);
     void stopCardEventMonitorThread();
