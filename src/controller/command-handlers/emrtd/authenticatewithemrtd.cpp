@@ -88,7 +88,7 @@ QVariantMap createAuthenticationToken(
     return QVariantMap {
         {"unverifiedPublicKeyInfo", publicKeyInfo},
         {"unverifiedPhoto", photo},
-        {"unverifiedMrz", QString::fromUtf8(mrzEmrtd)},
+        {"unverifiedMrz", mrzEmrtd},
         {"unverifiedDocumentSecurityObject", documentSecurityObject},
         {"algorithm", signatureAlgorithm},
         {"signature", signature},
@@ -113,7 +113,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo.eid().smartcard());
 
-    const auto mrzEmrtd = readFile(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
+    const auto mrzEmrtd = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
     const auto photo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
     const auto publicKeyInfo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
@@ -126,20 +126,9 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
         publicKeyInfo,
         photo,
         documentSecurityObject,
-        // TODO
-        "EC256"
+        // TODO: check what type of key and what typo of hashing alg - no hardcoding
+        "ES256"
         );
-}
-
-QByteArray AuthenticateWithEmrtd::readFile(
-    SecureMessagingObject& smo,
-    const pcsc_cpp::SmartCard& card,
-    byte_vector fileName
-)
-{
-    byte_vector fileData = smo.readFile(card, fileName);
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
-                                   int(fileData.size()));
 }
 
 QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
@@ -148,7 +137,9 @@ QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
     byte_vector fileName
 )
 {
-    return readFile(smo, card, fileName)
+    byte_vector fileData = smo.readFile(card, fileName);
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
+                                   int(fileData.size()))
         .toBase64(BASE64_OPTIONS);
 }
 

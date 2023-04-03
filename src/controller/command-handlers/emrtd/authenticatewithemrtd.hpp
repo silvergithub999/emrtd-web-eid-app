@@ -51,12 +51,6 @@ private:
        const pcsc_cpp::SmartCard& card
    );
 
-   QByteArray readFile(
-       SecureMessagingObject& smo,
-       const pcsc_cpp::SmartCard& card,
-       byte_vector fileName
-   );
-
    QByteArray readFileAndConvertToBase64(
        SecureMessagingObject& smo,
        const pcsc_cpp::SmartCard& card,
