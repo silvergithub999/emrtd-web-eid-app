@@ -26,7 +26,7 @@
 #include "../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
 #include "securemessagingobject.hpp"
 #include "../../commandhandler.hpp" // TODO: errors used
-#include "../emrtd/emrtd-utils/bac.hpp"
+#include "../emrtd/utils/bac.hpp"
 #include "../../certandpininfo.hpp"
 
 using byte_vector = std::vector<unsigned char>;

@@ -6,8 +6,8 @@
 #define WEB_EID_APP_SECUREMESSAGINGOBJECT_HPP
 
 #include <vector>
-#include "emrtd-utils/emrtdutils.hpp"
-#include "emrtd-utils/cryptoutils.hpp"
+#include "utils/emrtdutils.hpp"
+#include "utils/cryptoutils.hpp"
 
 using byte_vector = std::vector<unsigned char>;
 
