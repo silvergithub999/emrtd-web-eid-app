@@ -103,6 +103,9 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     EmrtdUI* window,
     const electronic_id::CardInfo& cardInfo
 ) {
+    // Getting the larger files off the chip will take time.
+    window->showWaitingForTokenPage();
+
     // TODO: add transaction guard
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
 

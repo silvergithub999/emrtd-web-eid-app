@@ -48,6 +48,8 @@ public:
 
     virtual void showWaitingForCardPage(const CommandType commandType) = 0;
 
+    virtual void showWaitingForTokenPage() = 0;
+
 signals:
     void accepted(const electronic_id::CardInfo::ptr cardInfo);
     void retry();

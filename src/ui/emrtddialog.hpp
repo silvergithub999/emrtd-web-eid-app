@@ -39,6 +39,8 @@ public:
 
     void showWaitingForCardPage(const CommandType commandType) final;
 
+    void showWaitingForTokenPage() final;
+
     static void showAboutPage();
     static void showFatalErrorPage();
 

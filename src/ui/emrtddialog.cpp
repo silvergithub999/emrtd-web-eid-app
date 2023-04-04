@@ -203,6 +203,17 @@ void EmrtdDialog::showWaitingForCardPage(const CommandType commandType)
     ui->pageStack->setCurrentIndex(int(Page::WAITING));
 }
 
+void EmrtdDialog::showWaitingForTokenPage()
+{
+    // TODO: Reusing the waiting for card page logic.
+    //  Should probably have separate page.
+    setTrText(ui->waitingPageTitleLabel, [] { return tr("Authenticating"); });
+
+    ui->okButton->hide();
+
+    ui->pageStack->setCurrentIndex(int(Page::WAITING));
+}
+
 void EmrtdDialog::onSmartCardStatusUpdate(const RetriableError status)
 {
     currentCommand = CommandType::INSERT_CARD;
@@ -362,6 +373,8 @@ EmrtdDialog::retriableErrorToTextTitleAndIcon(const RetriableError error)
 void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo)
 {
     ui->authenticationOriginLabel->setText(fromPunycode(origin));
+
+    ui->pageStack->setCurrentIndex(int(Page::WAITING));
 
     switch (currentCommand) {
     case CommandType::GET_EMRTD_SIGNING_CERTIFICATE:
