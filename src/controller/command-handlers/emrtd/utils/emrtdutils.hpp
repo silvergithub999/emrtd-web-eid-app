@@ -219,40 +219,4 @@ inline pcsc_cpp::byte_vector combineByteVectors(
     return result;
 }
 
-inline std::string getHashAlgorithmName(
-    byte_vector dg14
-) {
-    const auto rootValue = asn1_get_value(dg14);
-    // This is all the securityinfo SEQUENCE objects from the SET
-    std::vector<byte_vector> vecs = parse_asn1_sequence(rootValue);
-
-    // TODO: a different securityinfo has the key type as well
-    // 2.23.136.1.1.5
-    byte_vector hashAlgorithmOid = {0x06, 0x06, 0x67, 0x81, 0x08, 0x01, 0x01, 0x05};
-    for (const auto& vec : vecs) {
-        const auto securityInfos = parse_asn1_sequence(asn1_get_value(vec));
-        for (const auto& securityInfo : securityInfos) {
-            const auto securityInfoElements = parse_asn1_sequence(asn1_get_value(securityInfo));
-            const byte_vector oid = securityInfoElements.at(0); // oid is first
-            if (oid == hashAlgorithmOid) {
-                const auto value = asn1_get_value(securityInfoElements.at(2));
-                // TODO: maybe replace just hash algorithm
-                if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x02}) {
-                    return "bsiEcdsaWithSHA224";
-                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x03}) {
-                    return "bsiEcdsaWithSHA256";
-                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x04}) {
-                    return "bsiEcdsaWithSHA384";
-                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x05}) {
-                    return "bsiEcdsaWithSHA512";
-                }
-            }
-        }
-    }
-
-    throw std::runtime_error("Could not find the signature hash algorithm from SecurityInfos");
-}
-
-
-
 #endif

@@ -122,18 +122,16 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
     byte_vector dg14 = smo.readFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
-    getHashAlgorithmName(dg14);
 
     const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
 
     return createAuthenticationToken(
-        signature,
-        mrzEmrtd,
-        publicKeyInfo,
-        photo,
-        documentSecurityObject,
-        // TODO: check what type of key and what typo of hashing alg - no hardcoding
-        "ES256"
+            signature,
+            mrzEmrtd,
+            publicKeyInfo,
+            photo,
+            documentSecurityObject,
+            getSignatureAlgorithmName(dg14)
         );
 }
 
@@ -179,4 +177,36 @@ QByteArray AuthenticateWithEmrtd::createSignature(
     return QByteArray::fromRawData(reinterpret_cast<const char*>(signature.data()),
                                    int(signature.size()))
         .toBase64(BASE64_OPTIONS);
+}
+
+QString AuthenticateWithEmrtd::getSignatureAlgorithmName(
+    byte_vector dg14
+) {
+    const auto rootValue = asn1_get_value(dg14);
+    // This is all the securityinfo SEQUENCE objects from the SET
+    std::vector<byte_vector> vecs = parse_asn1_sequence(rootValue);
+
+    // TODO: a different securityinfo has the key type as well
+    // 2.23.136.1.1.5
+    byte_vector hashAlgorithmOid = {0x06, 0x06, 0x67, 0x81, 0x08, 0x01, 0x01, 0x05};
+    for (const auto& vec : vecs) {
+        const auto securityInfos = parse_asn1_sequence(asn1_get_value(vec));
+        for (const auto& securityInfo : securityInfos) {
+            const auto securityInfoElements = parse_asn1_sequence(asn1_get_value(securityInfo));
+            const byte_vector oid = securityInfoElements.at(0); // oid is first
+            if (oid == hashAlgorithmOid) {
+                const auto value = asn1_get_value(securityInfoElements.at(2));
+                if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x02}) {
+                    return QString::fromStdString("ES224");
+                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x03}) {
+                    return QString::fromStdString("ES256");
+                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x04}) {
+                    return QString::fromStdString("ES384");
+                } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x05}) {
+                    return QString::fromStdString("ES512");
+                }
+            }
+        }
+    }
+    throw std::runtime_error("Could not find the signature hash algorithm from SecurityInfos");
 }

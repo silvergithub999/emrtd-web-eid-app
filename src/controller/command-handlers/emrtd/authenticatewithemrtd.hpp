@@ -56,4 +56,6 @@ private:
        const pcsc_cpp::SmartCard& card,
        byte_vector fileName
    );
+
+   QString getSignatureAlgorithmName(byte_vector dg14);
 };
