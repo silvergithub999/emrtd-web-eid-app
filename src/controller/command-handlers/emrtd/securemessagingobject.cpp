@@ -58,14 +58,13 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
             throw std::runtime_error("AES256 currently not supported");
         }
 
-        // TODO
         if (((int) apdu.ins) % 2 == 0) {
             byte_vector do87(0);
 
             do87.push_back(0x87);
 
-            byte_vector todo = asn1_len(1 + encryptedData.size());
-            do87.insert(do87.end(), todo.begin(), todo.end());
+            byte_vector len = asn1_len(1 + encryptedData.size());
+            do87.insert(do87.end(), len.begin(), len.end());
 
             do87.push_back(0x01);
             do87.insert(do87.end(), encryptedData.begin(), encryptedData.end());
@@ -76,8 +75,8 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
 
             do85.push_back(0x85);
 
-            byte_vector todo = asn1_len(encryptedData.size());
-            do85.insert(do85.end(), todo.begin(), todo.end());
+            byte_vector len = asn1_len(encryptedData.size());
+            do85.insert(do85.end(), len.begin(), len.end());
 
             do85.insert(do85.end(), encryptedData.begin(), encryptedData.end());
 
@@ -90,8 +89,8 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
 
         do97.push_back(0x97);
 
-        byte_vector todo = asn1_len(1);
-        do97.insert(do97.end(), todo.begin(), todo.end());
+        byte_vector len = asn1_len(1);
+        do97.insert(do97.end(), len.begin(), len.end());
 
         do97.push_back(apdu.le);
 
@@ -100,20 +99,20 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
 
     byte_vector paddedHeader = paddingMethod2({modifiedCla, apdu.ins, apdu.p1, apdu.p2});
 
-    byte_vector todo(0);
-    todo.insert(todo.end(), this->ssc_counter.begin(), this->ssc_counter.end());
-    todo.insert(todo.end(), paddedHeader.begin(), paddedHeader.end());
-    todo.insert(todo.end(), payload.begin(), payload.end());
+    byte_vector sum(0);
+    sum.insert(sum.end(), this->ssc_counter.begin(), this->ssc_counter.end());
+    sum.insert(sum.end(), paddedHeader.begin(), paddedHeader.end());
+    sum.insert(sum.end(), payload.begin(), payload.end());
 
-    byte_vector n = paddingMethod2(todo);
+    byte_vector n = paddingMethod2(sum);
 
     byte_vector cc = computeMac(this->sessionMacKey, n, this->macAlgorithm);
 
     byte_vector do8e(0);
     do8e.push_back(0x8E);
 
-    byte_vector todo2 = asn1_len(cc.size());
-    do8e.insert(do8e.end(), todo2.begin(), todo2.end());
+    byte_vector len = asn1_len(cc.size());
+    do8e.insert(do8e.end(), len.begin(), len.end());
     do8e.insert(do8e.end(), cc.begin(), cc.end());
 
     payload.insert(payload.end(), do8e.begin(), do8e.end());
@@ -130,6 +129,8 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
     return protectedApdu;
 }
 
+
+
 byte_vector SecureMessagingObject::processResponseData(const byte_vector& responseData)
 {
     this->incrementSsc();
@@ -142,7 +143,9 @@ byte_vector SecureMessagingObject::processResponseData(const byte_vector& respon
     byte_vector do87(0);
     byte_vector do99(0);
     byte_vector do8e(0);
-    std::vector<byte_vector> vecs = asn1_get_all(responseData);
+
+    // [DO'85 or DO'87][DO'99][DO'8E]
+    std::vector<byte_vector> vecs = parse_asn1_sequence(responseData);
 
     for (const auto& vec : vecs) {
         switch (vec[0]) {
@@ -165,12 +168,12 @@ byte_vector SecureMessagingObject::processResponseData(const byte_vector& respon
 
     // ssc + (do85 or b"") + (do87 or b"") + (do99 or b"")
     byte_vector ssc = getSscBytes();
-    byte_vector todo(0);
-    todo.insert(todo.end(), ssc.begin(), ssc.end());
-    todo.insert(todo.end(), do85.begin(), do85.end());
-    todo.insert(todo.end(), do87.begin(), do87.end());
-    todo.insert(todo.end(), do99.begin(), do99.end());
-    byte_vector k = paddingMethod2(todo);
+    byte_vector sum(0);
+    sum.insert(sum.end(), ssc.begin(), ssc.end());
+    sum.insert(sum.end(), do85.begin(), do85.end());
+    sum.insert(sum.end(), do87.begin(), do87.end());
+    sum.insert(sum.end(), do99.begin(), do99.end());
+    byte_vector k = paddingMethod2(sum);
 
     byte_vector cc = computeMac(this->sessionMacKey, k, this->macAlgorithm);
 

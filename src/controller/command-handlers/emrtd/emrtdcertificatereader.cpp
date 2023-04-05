@@ -2,8 +2,6 @@
 #include "command-handlers/signauthutils.hpp"
 #include "commandhandler.hpp" // TODO: using just for errors
 
-// TODO: should probably read and verifiy cert as well.
-
 EmrtdCertificateReader::EmrtdCertificateReader(const CommandWithArguments& cmd) : CommandHandlerEmrtd(cmd)
 {
     validateAndStoreOrigin(cmd.second);
@@ -42,9 +40,10 @@ void EmrtdCertificateReader::validateAndStoreOrigin(const QVariantMap& arguments
         || origin.hasFragment()) {
         THROW(CommandHandlerInputDataError, "origin is not in <scheme>://<host>[:<port>] format");
     }
+    // TODO: add back
     /*
     if (origin.scheme() != QStringLiteral("https") && origin.scheme() != QStringLiteral("wss")) {
         THROW(CommandHandlerInputDataError, "origin scheme has to be https or wss");
     }
-     */
+    */
 }

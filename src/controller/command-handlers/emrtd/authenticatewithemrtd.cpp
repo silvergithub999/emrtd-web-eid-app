@@ -121,6 +121,9 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     const auto publicKeyInfo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
+    byte_vector dg14 = smo.readFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
+    getHashAlgorithmName(dg14);
+
     const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
 
     return createAuthenticationToken(

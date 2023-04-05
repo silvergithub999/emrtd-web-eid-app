@@ -44,10 +44,6 @@ public:
    void connectSignals(const EmrtdUI* window) override;
 
 protected:
-    /*
-    virtual void
-    emitCertificatesReady(const std::vector<CardCertificateAndPinInfo>& cardCertAndPinInfos);
-     */
     void validateAndStoreOrigin(const QVariantMap& arguments);
 
    electronic_id::CertificateType certificateType = electronic_id::CertificateType::NONE;

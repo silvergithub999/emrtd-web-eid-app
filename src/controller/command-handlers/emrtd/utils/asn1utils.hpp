@@ -9,19 +9,6 @@
 
 using byte_vector = std::vector<unsigned char>;
 
-// Removes type and length from asn1 object.
-inline int asn1_prefix_length(const byte_vector& der) {
-    if (der.empty()) {
-        return 0;
-    }
-
-    if ((der[1] & 128) == 128) {
-        return 2 + ((int) der[1]) - 128;
-    } else {
-        return 2;
-    }
-}
-
 inline int byteVectorToInt(const byte_vector& bytes) {
     int l = 0;
     for (unsigned char byte : bytes) {
@@ -31,19 +18,42 @@ inline int byteVectorToInt(const byte_vector& bytes) {
     return l;
 }
 
+/**
+ * DER is: type-length-value
+ * This function finds len(type+length).
+ *
+ * asn1_prefix_length(der) + asn1_value_length(der) = len(der)
+ */
+inline int asn1_prefix_length(const byte_vector& der) {
+    if (der.empty()) {
+        return 0;
+    }
+
+    if ((der[1] & 128) == 128) {
+        return 2 + ((int) der[1]) - 128;
+    }
+    return 2;
+}
+
+/**
+ * DER is: type-length-value
+ * This function return the length as integer.
+ *
+ * asn1_prefix_length(der) + asn1_value_length(der) = len(der)
+ */
 inline int asn1_value_length(const byte_vector& der) {
     if (der[1] > 128) {
         return byteVectorToInt({der.begin() + 2, der.begin() + 2 + ((int) der[1]) - 128});
-    } else {
-        return (int) der[1];
     }
+    return (int) der[1];
 }
 
-// Encodes the ASN.1 length into a series of bytes and returns the resulting
-// vector of bytes.
-inline byte_vector asn1_len(size_t length)
-{
-    // TODO: is the static_cast correct?
+/**
+ * DER is: type-length-value
+ *
+ * This function converts a number into the length bytes of der.
+ */
+inline byte_vector asn1_len(size_t length) {
     byte_vector result;
     if (length < 0x80) {
         // Short form: length is encoded in one byte
@@ -65,7 +75,17 @@ inline byte_vector asn1_len(size_t length)
     return result;
 }
 
-inline std::vector<byte_vector> asn1_get_all(const byte_vector& der) {
+/**
+ * DER is: type-length-value
+ *
+ * This function returns the DER value.
+ */
+inline byte_vector asn1_get_value(const byte_vector& der) {
+    return {der.begin() + asn1_prefix_length(der), der.end()};
+}
+
+inline std::vector<byte_vector> parse_asn1_sequence(const byte_vector& der) {
+    // Expects der elements to be in sequence
     byte_vector next(der.begin(), der.end());
 
     int obj_pl = asn1_prefix_length(next);
@@ -86,10 +106,6 @@ inline std::vector<byte_vector> asn1_get_all(const byte_vector& der) {
     }
 
     return objs;
-}
-
-inline byte_vector asn1_get_value(const byte_vector& der) {
-    return {der.begin() + asn1_prefix_length(der), der.end()};
 }
 
 #endif
