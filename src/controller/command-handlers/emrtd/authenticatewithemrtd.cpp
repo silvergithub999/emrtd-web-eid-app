@@ -83,14 +83,15 @@ QVariantMap createAuthenticationToken(
     const QByteArray& publicKeyInfo,
     const QByteArray& photo,
     const QByteArray& documentSecurityObject,
-    const QString& signatureAlgorithm
+    const QString& hashAlgorithm
 ) {
+    // TODO: maybe rename algorithm to hashAlgorithm
     return QVariantMap {
         {"unverifiedPublicKeyInfo", publicKeyInfo},
         {"unverifiedPhoto", photo},
         {"unverifiedMrz", mrzEmrtd},
         {"unverifiedDocumentSecurityObject", documentSecurityObject},
-        {"algorithm", signatureAlgorithm},
+        {"algorithm", hashAlgorithm},
         {"signature", signature},
         {"format", QStringLiteral("web-eid:1.0-emrtd")},
         {"appVersion",
@@ -105,6 +106,8 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
 ) {
     // Getting the larger files off the chip will take time.
     window->showWaitingForTokenPage();
+
+    // TODO: currently double setting up secret
 
     // TODO: add transaction guard
     // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
@@ -122,17 +125,19 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
     byte_vector dg14 = smo.readFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
+    const auto hashAlgorithmName = getHashAlgorithmName(dg14);
 
-    const auto signature = createSignature(challengeNonce, origin.url(), smo, cardInfo.eid().smartcard());
+    // TODO: use the hashAlgorithm variable
+    const auto signature = createSignature(challengeNonce, origin.url(), hashAlgorithmName, smo, cardInfo.eid().smartcard());
 
     return createAuthenticationToken(
-            signature,
-            mrzEmrtd,
-            publicKeyInfo,
-            photo,
-            documentSecurityObject,
-            getSignatureAlgorithmName(dg14)
-        );
+        signature,
+        mrzEmrtd,
+        publicKeyInfo,
+        photo,
+        documentSecurityObject,
+        hashAlgorithmName
+    );
 }
 
 QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
@@ -154,10 +159,21 @@ void AuthenticateWithEmrtd::connectSignals(const EmrtdUI* window) {
 QByteArray AuthenticateWithEmrtd::createSignature(
     const QString& challengeNonce,
     const QString& origin,
+    const QString& hashAlgorithmName,
     SecureMessagingObject& smo,
     const pcsc_cpp::SmartCard& card
 ) {
-    auto hashAlgo = QCryptographicHash::Sha256;
+    // TODO: can be done with one action
+    QCryptographicHash::Algorithm hashAlgo;
+    if (hashAlgorithmName == "SHA224") {
+        hashAlgo = QCryptographicHash::Sha224;
+    } else if (hashAlgorithmName == "SHA256") {
+        hashAlgo = QCryptographicHash::Sha256;
+    } else if (hashAlgorithmName == "SHA384") {
+        hashAlgo = QCryptographicHash::Sha384;
+    } else if (hashAlgorithmName == "SHA512") {
+        hashAlgo = QCryptographicHash::Sha512;
+    }
 
     const auto originHash = QCryptographicHash::hash(origin.toUtf8(), hashAlgo);
     const auto challengeNonceHash = QCryptographicHash::hash(challengeNonce.toUtf8(), hashAlgo);
@@ -179,34 +195,35 @@ QByteArray AuthenticateWithEmrtd::createSignature(
         .toBase64(BASE64_OPTIONS);
 }
 
-QString AuthenticateWithEmrtd::getSignatureAlgorithmName(
+QString AuthenticateWithEmrtd::getHashAlgorithmName(
     byte_vector dg14
 ) {
     const auto rootValue = asn1_get_value(dg14);
     // This is all the securityinfo SEQUENCE objects from the SET
     std::vector<byte_vector> vecs = parse_asn1_sequence(rootValue);
 
-    // TODO: a different securityinfo has the key type as well
     // 2.23.136.1.1.5
-    byte_vector hashAlgorithmOid = {0x06, 0x06, 0x67, 0x81, 0x08, 0x01, 0x01, 0x05};
+    byte_vector hashAlgorithmOid = {0x67, 0x81, 0x08, 0x01, 0x01, 0x05};
     for (const auto& vec : vecs) {
         const auto securityInfos = parse_asn1_sequence(asn1_get_value(vec));
         for (const auto& securityInfo : securityInfos) {
             const auto securityInfoElements = parse_asn1_sequence(asn1_get_value(securityInfo));
-            const byte_vector oid = securityInfoElements.at(0); // oid is first
+            const byte_vector oid = asn1_get_value(securityInfoElements.at(0)); // oid is first
             if (oid == hashAlgorithmOid) {
                 const auto value = asn1_get_value(securityInfoElements.at(2));
                 if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x02}) {
-                    return QString::fromStdString("ES224");
+                    return QString::fromStdString("SHA224");
                 } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x03}) {
-                    return QString::fromStdString("ES256");
+                    return QString::fromStdString("SHA256");
                 } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x04}) {
-                    return QString::fromStdString("ES384");
+                    return QString::fromStdString("SHA384");
                 } else if (value == byte_vector{0x04, 0x00, 0x7f, 0x00, 0x07, 0x01, 0x01, 0x04, 0x01, 0x05}) {
-                    return QString::fromStdString("ES512");
+                    return QString::fromStdString("SHA512");
                 }
             }
         }
     }
     throw std::runtime_error("Could not find the signature hash algorithm from SecurityInfos");
 }
+
+

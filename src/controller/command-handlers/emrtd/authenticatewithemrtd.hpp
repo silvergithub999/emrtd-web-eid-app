@@ -47,6 +47,7 @@ private:
    QByteArray createSignature(
        const QString& challengeNonce,
        const QString& origin,
+       const QString& hashAlgorithmName,
        SecureMessagingObject& smo,
        const pcsc_cpp::SmartCard& card
    );
@@ -57,5 +58,5 @@ private:
        byte_vector fileName
    );
 
-   QString getSignatureAlgorithmName(byte_vector dg14);
+   QString getHashAlgorithmName(byte_vector dg14);
 };

@@ -29,7 +29,6 @@
 
 #include "emrtddialog.hpp"
 
-// TODO: replace with new ui
 #include "ui_autogen/include/emrtdui_dialog.h"
 
 #include <QButtonGroup>
@@ -44,6 +43,11 @@
 #include <QTimeLine>
 #include <QUrl>
 #include <application.hpp>
+#include <regex>
+
+#include "../controller/command-handlers/emrtd/utils/asn1utils.hpp"
+#include "../controller/command-handlers/emrtd/utils/bac.hpp"
+#include "../controller/command-handlers/emrtd/utils/emrtdutils.hpp"
 
 #ifdef Q_OS_LINUX
 #include <stdio.h>
@@ -376,37 +380,77 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     ui->pageStack->setCurrentIndex(int(Page::WAITING));
 
-    switch (currentCommand) {
-    case CommandType::GET_EMRTD_SIGNING_CERTIFICATE:
-        emit accepted(cardInfo);
-        break;
-    case CommandType::AUTHENTICATE_WITH_EMRTD:
-        setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with EMRTD"); });
-        setTrText(ui->authenticationDescriptionLabel, [] {
-            return tr("By authenticating, I agree to the transfer the following data to the service provider:");
-        });
-
-        setupOK([this, cardInfo] { emit accepted(cardInfo); });
-        insertItemToQListWidget(ui->authenticationItemList, "Name");
-        insertItemToQListWidget(ui->authenticationItemList, "ID code");
-        insertItemToQListWidget(ui->authenticationItemList, "Document number");
-        insertItemToQListWidget(ui->authenticationItemList, "Birthday");
-        insertItemToQListWidget(ui->authenticationItemList, "Birthplace");
-        insertItemToQListWidget(ui->authenticationItemList, "Photo");
-        break;
-    default:
-        emit failure(QStringLiteral("Only AUTHENTICATE_WITH_EMRTD, GET_EMRTD_SIGNING_CERTIFICATE allowed"));
+    if (currentCommand != CommandType::AUTHENTICATE_WITH_EMRTD) {
+        emit failure(QStringLiteral("Only AUTHENTICATE_WITH_EMRTD allowed"));
         return;
     }
+
+    setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with EMRTD"); });
+    setTrText(ui->authenticationDescriptionLabel, [] {
+        return tr("By authenticating, I agree to the transfer the following data to the service provider:");
+    });
+
+    // TODO: add transaction guard
+    // auto transactionGuard = cardInfo->eid().smartcard()->beginTransaction();
+
+    byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo->eid().smartcard());
+
+    selectEmrtdApplet(cardInfo->eid().smartcard());
+
+    // TODO: pass this to the onConfirm, so would not have to do double reading.
+    SecureMessagingObject smo =
+        BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
+
+    byte_vector dg01 = smo.readFile(cardInfo->eid().smartcard(), {0x01, 0x01});
+
+    for(const auto& elem : parseMrz(dg01)) {
+        insertItemToQListWidget(
+            ui->authenticationItemList,
+            QString::fromStdString(elem.first),
+            QString::fromStdString(elem.second)
+        );
+    }
+
+    setupOK([this, cardInfo] { emit accepted(cardInfo); });
 
     ui->pageStack->setCurrentIndex(int(Page::AUTHENTICATE_WITH_EMRTD));
 }
 
+std::map<std::string, std::string> EmrtdDialog::parseMrz(
+    pcsc_cpp::byte_vector dg01
+) {
+    const auto mrzBytes = asn1_get_value(asn1_get_value(dg01));
+    std::string mrzString(mrzBytes.begin(), mrzBytes.end());
+
+    std::string issuingState = mrzString.substr(3, 3);
+
+    if (issuingState == "EST") {
+        std::map<std::string, std::string> parsedMrz;
+
+        parsedMrz["Issuing State"] = issuingState;
+        parsedMrz["Document Number"] = mrzString.substr(6, 9);
+        parsedMrz["ID Code"] = mrzString.substr(16, 11);
+        parsedMrz["Date of Birth"] = mrzString.substr(31, 6);
+        parsedMrz["Gender"] = mrzString.substr(38, 1);
+        parsedMrz["Expiration Date"] = mrzString.substr(39, 6);
+        parsedMrz["Origin State"] = mrzString.substr(46, 3);
+
+        // In TD1 one line is 30 chars, getting the last line
+        std::string lastLine = mrzString.substr(61, 30);
+        parsedMrz["name"] = std::regex_replace(lastLine, std::regex("<+"), " ");
+
+        return parsedMrz;
+    }
+
+    throw std::runtime_error("Only Estonian MRZ is supported currently");
+}
+
 void EmrtdDialog::insertItemToQListWidget(
     QListWidget* list,
-    const QString& text)
-{
-    QListWidgetItem* item = new QListWidgetItem(text);
+    const QString& key,
+    const QString& value
+) {
+    QListWidgetItem* item = new QListWidgetItem(key + ": " + value);
     // Removing the selectable flag from the list item
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 

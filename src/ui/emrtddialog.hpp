@@ -26,6 +26,8 @@
 
 #include <QCloseEvent>
 #include <QListWidget>
+#include <map>
+#include <string>
 
 class EmrtdDialog final : public EmrtdUI
 {
@@ -82,7 +84,7 @@ private:
 
     void resizeHeight();
 
-    void insertItemToQListWidget(QListWidget* list, const QString& text);
+    void insertItemToQListWidget(QListWidget* list, const QString& key, const QString& value);
 
     Q_DISABLE_COPY(EmrtdDialog)
     EmrtdDialog(EmrtdDialog&&) = delete;
@@ -90,6 +92,8 @@ private:
 
     QPixmap pixmap(QLatin1String name) const;
     std::tuple<QString, QString, QPixmap> retriableErrorToTextTitleAndIcon(RetriableError error);
+
+    std::map<std::string, std::string> parseMrz(pcsc_cpp::byte_vector dg01);
 
     class Private;
     Private* ui;

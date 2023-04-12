@@ -35,7 +35,6 @@ public:
         GET_SIGNING_CERTIFICATE,
         AUTHENTICATE,
         AUTHENTICATE_WITH_EMRTD,
-        GET_EMRTD_SIGNING_CERTIFICATE,
         SIGN,
         QUIT,
         ABOUT,
