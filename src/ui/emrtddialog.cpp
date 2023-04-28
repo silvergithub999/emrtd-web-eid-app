@@ -403,6 +403,11 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     byte_vector dg01 = smo.readFile(cardInfo->eid().smartcard(), {0x01, 0x01});
 
+    insertItemToQListWidget(
+        ui->authenticationItemList,
+        QString::fromStdString("Photo")
+    );
+
     for(const auto& elem : parseMrz(dg01)) {
         insertItemToQListWidget(
             ui->authenticationItemList,
@@ -410,6 +415,8 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
             QString::fromStdString(elem.second)
         );
     }
+
+    // TODO: get facial image from DG02 and display it as well
 
     setupOK([this, cardInfo] { emit accepted(cardInfo); });
 
@@ -437,7 +444,7 @@ std::map<std::string, std::string> EmrtdDialog::parseMrz(
 
         // In TD1 one line is 30 chars, getting the last line
         std::string lastLine = mrzString.substr(61, 30);
-        parsedMrz["name"] = std::regex_replace(lastLine, std::regex("<+"), " ");
+        parsedMrz["Name"] = std::regex_replace(lastLine, std::regex("<+"), " ");
 
         return parsedMrz;
     }
@@ -454,7 +461,16 @@ void EmrtdDialog::insertItemToQListWidget(
     // Removing the selectable flag from the list item
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
-    list->insertItem(4, item);
+    list->insertItem(0, item);
 }
 
+void EmrtdDialog::insertItemToQListWidget(
+    QListWidget* list,
+    const QString& value
+) {
+    QListWidgetItem* item = new QListWidgetItem(value);
+    // Removing the selectable flag from the list item
+    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
+    list->insertItem(1, item);
+}

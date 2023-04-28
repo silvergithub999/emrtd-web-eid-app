@@ -86,6 +86,8 @@ private:
 
     void insertItemToQListWidget(QListWidget* list, const QString& key, const QString& value);
 
+    void insertItemToQListWidget(QListWidget* list, const QString& value);
+
     Q_DISABLE_COPY(EmrtdDialog)
     EmrtdDialog(EmrtdDialog&&) = delete;
     EmrtdDialog& operator=(EmrtdDialog&&) = delete;
