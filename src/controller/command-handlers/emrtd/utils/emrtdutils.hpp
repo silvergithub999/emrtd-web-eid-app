@@ -22,8 +22,6 @@
 #include <map>
 #include "asn1utils.hpp"
 
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 using byte_vector = std::vector<unsigned char>;
 using namespace electronic_id;
 
@@ -56,6 +54,8 @@ inline byte_vector readFileFromIdApplet(
     const pcsc_cpp::SmartCard& card,
     const byte_vector& fileName
 ) {
+    sendApduAndValidate(card, pcsc_cpp::CommandApdu(0x00, 0xA4, 0x01, 0x0C, fileName));
+
     pcsc_cpp::CommandApdu apdu(0x00, 0xB0, 0x00, 0x00, {}, 0x00);
 
     const auto response = card.transmit(apdu);
@@ -129,10 +129,8 @@ inline byte_vector readInfoFromIdAppletAndGetSecret(const pcsc_cpp::SmartCard& c
 
     // TODO: different files for different id cards 2018 vs present
 
-    sendApduAndValidate(card, pcsc_cpp::CommandApdu(0x00, 0xA4, 0x01, 0x0C, {0x50, 0x07}));
     byte_vector documentNumber = readFileFromIdApplet(card, {0x50, 0x07});
 
-    sendApduAndValidate(card, pcsc_cpp::CommandApdu(0x00, 0xA4, 0x01, 0x0C, {0x50, 0x05}));
     byte_vector dateOfBirthOriginal = readFileFromIdApplet(card, {0x50, 0x05});
 
     byte_vector dateOfBirth(0);
@@ -140,7 +138,6 @@ inline byte_vector readInfoFromIdAppletAndGetSecret(const pcsc_cpp::SmartCard& c
     dateOfBirth.insert(dateOfBirth.end(), dateOfBirthOriginal.begin() + 3, dateOfBirthOriginal.begin() + 5);
     dateOfBirth.insert(dateOfBirth.end(), dateOfBirthOriginal.begin(), dateOfBirthOriginal.begin() + 2);
 
-    sendApduAndValidate(card, pcsc_cpp::CommandApdu(0x00, 0xA4, 0x01, 0x0C, {0x50, 0x08}));
     byte_vector expirationDateOriginal = readFileFromIdApplet(card, {0x50, 0x08});
 
     byte_vector expirationDate(0);

@@ -19,8 +19,6 @@
 #include <map>
 #include "asn1utils.hpp"
 
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 using byte_vector = std::vector<unsigned char>;
 using namespace electronic_id;
 

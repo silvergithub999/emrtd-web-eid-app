@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 #include "controlleremrtd.hpp"
 
 #include "threads/cardeventmonitorthread.hpp"

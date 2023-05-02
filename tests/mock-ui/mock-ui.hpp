@@ -20,9 +20,6 @@
  * SOFTWARE.
  */
 
-// TODO: emrtd stuff
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 #pragma once
 
 #include "ui.hpp"
@@ -72,6 +69,4 @@ public: // slots
         // Schedule invoking Controller::exit().
         emit destroyed();
     }
-
-    void onEmrtdCommand(const QUrl& origin, const electronic_id::CardInfo::ptr cardInfo) { }
 };

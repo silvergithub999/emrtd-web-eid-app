@@ -129,8 +129,6 @@ pcsc_cpp::CommandApdu SecureMessagingObject::secureMessaging(const pcsc_cpp::Com
     return protectedApdu;
 }
 
-
-
 byte_vector SecureMessagingObject::processResponseData(const byte_vector& responseData)
 {
     this->incrementSsc();

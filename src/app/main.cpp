@@ -20,8 +20,6 @@
 * SOFTWARE.
 */
 
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 #include "application.hpp"
 #include "controller.hpp"
 #include "controlleremrtd.hpp"

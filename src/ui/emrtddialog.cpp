@@ -20,16 +20,13 @@
  * SOFTWARE.
  */
 
-// TODO: origin parameter in emrtd function
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 #include "webeiddialog.hpp"
 #include "application.hpp"
 #include "punycode.hpp"
 
 #include "emrtddialog.hpp"
 
-#include "ui_autogen/include/emrtdui_dialog.h"
+#include "ui_dialog-emrtd.h"
 
 #include <QButtonGroup>
 #include <QDesktopServices>
@@ -391,7 +388,6 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
     });
 
     // TODO: add transaction guard
-    // auto transactionGuard = cardInfo->eid().smartcard()->beginTransaction();
 
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo->eid().smartcard());
 

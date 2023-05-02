@@ -2,9 +2,6 @@
 // Created by silver on 22.4.7.
 //
 
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-
 #include <array>
 #include <openssl/ossl_typ.h>
 #include <openssl/des.h>
