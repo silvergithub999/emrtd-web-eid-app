@@ -110,10 +110,15 @@ inline int calculateCheckDigit(const byte_vector& data) {
 }
 
 inline void selectEmrtdApplet(const pcsc_cpp::SmartCard& card) {
-    const byte_vector emrtdId = {0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01};
-    pcsc_cpp::CommandApdu apdu(0x00, 0xA4, 0x04, 0x0C, emrtdId);
+    const byte_vector emrtdAID = {0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0xFF};
+    sendApduAndValidate(
+        card,
+        pcsc_cpp::CommandApdu(0x00, 0xA4, 0x04, 0x0C, emrtdAID)
+    );
 
-    // TODO: if error then this applet is not present
+    const byte_vector ldsAID = {0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01};
+    pcsc_cpp::CommandApdu apdu(0x00, 0xA4, 0x04, 0x0C, ldsAID);
+
     sendApduAndValidate(card, apdu);
 }
 
@@ -152,13 +157,6 @@ inline byte_vector readInfoFromIdAppletAndGetSecret(const pcsc_cpp::SmartCard& c
         + std::to_string(calculateCheckDigit(dateOfBirth))
         + std::string(expirationDate.begin(),expirationDate.end())
         + std::to_string(calculateCheckDigit(expirationDate));
-
-    // Select LDS applet
-    const byte_vector ldsId = {0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0xFF};
-    sendApduAndValidate(
-        card,
-        pcsc_cpp::CommandApdu(0x00, 0xA4, 0x04, 0x0C, ldsId)
-        );
 
     return {secret.begin(), secret.end()};
 }

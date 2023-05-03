@@ -391,7 +391,16 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo->eid().smartcard());
 
-    selectEmrtdApplet(cardInfo->eid().smartcard());
+    try
+    {
+        selectEmrtdApplet(cardInfo->eid().smartcard());
+    }
+    catch (const std::runtime_error& error)
+    {
+        throw std::runtime_error("The card does not have the eMRTD applet.");
+    }
+
+
 
     // TODO: pass this to the onConfirm, so would not have to do double reading.
     SecureMessagingObject smo =
