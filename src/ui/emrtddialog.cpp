@@ -400,8 +400,6 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         throw std::runtime_error("The card does not have the eMRTD applet.");
     }
 
-
-
     // TODO: pass this to the onConfirm, so would not have to do double reading.
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
@@ -436,25 +434,29 @@ std::map<std::string, std::string> EmrtdDialog::parseMrz(
 
     std::string issuingState = mrzString.substr(3, 3);
 
-    if (issuingState == "EST") {
-        std::map<std::string, std::string> parsedMrz;
-
-        parsedMrz["Issuing State"] = issuingState;
-        parsedMrz["Document Number"] = mrzString.substr(6, 9);
-        parsedMrz["ID Code"] = mrzString.substr(16, 11);
-        parsedMrz["Date of Birth"] = mrzString.substr(31, 6);
-        parsedMrz["Gender"] = mrzString.substr(38, 1);
-        parsedMrz["Expiration Date"] = mrzString.substr(39, 6);
-        parsedMrz["Origin State"] = mrzString.substr(46, 3);
-
-        // In TD1 one line is 30 chars, getting the last line
-        std::string lastLine = mrzString.substr(61, 30);
-        parsedMrz["Name"] = std::regex_replace(lastLine, std::regex("<+"), " ");
-
-        return parsedMrz;
+    if (issuingState != "EST") {
+        // TODO:
+        //  The MRZ has fields that are left up to the issuing state.
+        //  For example, German MRZ lacks the ID code.
+        qDebug() << "The MRZ issuing state is not EST. "
+                    "MRZ optional fields might be different for other issuing States.";
     }
 
-    throw std::runtime_error("Only Estonian MRZ is supported currently");
+    std::map<std::string, std::string> parsedMrz;
+
+    parsedMrz["Issuing State"] = issuingState;
+    parsedMrz["Document Number"] = mrzString.substr(6, 9);
+    parsedMrz["ID Code"] = mrzString.substr(16, 11);
+    parsedMrz["Date of Birth"] = mrzString.substr(31, 6);
+    parsedMrz["Gender"] = mrzString.substr(38, 1);
+    parsedMrz["Expiration Date"] = mrzString.substr(39, 6);
+    parsedMrz["Origin State"] = mrzString.substr(46, 3);
+
+    // In TD1 one line is 30 chars, getting the last line
+    std::string lastLine = mrzString.substr(61, 30);
+    parsedMrz["Name"] = std::regex_replace(lastLine, std::regex("<+"), " ");
+
+    return parsedMrz;
 }
 
 void EmrtdDialog::insertItemToQListWidget(
