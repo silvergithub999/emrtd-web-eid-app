@@ -23,13 +23,13 @@
 #pragma once
 
 #include "emrtdcertificatereader.hpp"
-#include "../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
+#include "../../commandhandler.hpp"
 #include "securemessagingobject.hpp"
-#include "../../commandhandler.hpp" // TODO: errors used
-#include "../emrtd/utils/bac.hpp"
-#include "../../certandpininfo.hpp"
+#include "utils/bac.hpp"
+#include "utils/asn1utils.hpp"
 
 using byte_vector = std::vector<unsigned char>;
+using namespace electronic_id;
 
 class AuthenticateWithEmrtd : public EmrtdCertificateReader
 {

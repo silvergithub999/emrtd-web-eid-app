@@ -387,20 +387,18 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         return tr("By authenticating, I agree to the transfer the following data to the service provider:");
     });
 
-    // TODO: add transaction guard
-
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo->eid().smartcard());
 
-    try
-    {
+    try {
         selectEmrtdApplet(cardInfo->eid().smartcard());
-    }
-    catch (const std::runtime_error& error)
-    {
+    } catch (const std::runtime_error& error) {
         throw std::runtime_error("The card does not have the eMRTD applet.");
     }
 
-    // TODO: pass this to the onConfirm, so would not have to do double reading.
+    // TODO: currently creating of session keys and reading dg01 is done twice.
+    //  This is because could not pass smo to the lambda function to get it to the
+    //  authenticatewithemrtd.cpp file. This is because of the const keyword - smo updates
+    //  the internal SSC for each request and cannot be const.
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
 

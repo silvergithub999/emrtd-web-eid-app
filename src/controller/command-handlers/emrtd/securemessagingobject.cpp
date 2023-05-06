@@ -1,12 +1,5 @@
-
-//
-// Created by silver on 22.14.6.
-//
-
 #include "securemessagingobject.hpp"
 #include <cmath>
-
-#include <utility>
 
 void SecureMessagingObject::incrementSsc() {
     unsigned long sscCounterLong = byteVectorToLong(this->ssc_counter);

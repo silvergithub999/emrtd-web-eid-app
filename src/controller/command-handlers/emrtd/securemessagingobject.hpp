@@ -1,7 +1,3 @@
-//
-// Created by silver on 22.14.6.
-//
-
 #ifndef WEB_EID_APP_SECUREMESSAGINGOBJECT_HPP
 #define WEB_EID_APP_SECUREMESSAGINGOBJECT_HPP
 
@@ -10,7 +6,6 @@
 #include "utils/cryptoutils.hpp"
 
 using byte_vector = std::vector<unsigned char>;
-
 
 /**
  * TODO: add card object to the constructor

@@ -1,13 +1,7 @@
-//
-// Created by silver on 22.4.7.
-//
-
 #ifndef WEB_EID_APP_BAC_H
 #define WEB_EID_APP_BAC_H
 
 #include <vector>
-#include "../../../../../lib/libelectronic-id/include/electronic-id/enums.hpp"
-#include "../../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
 #include "../securemessagingobject.hpp"
 
 using byte_vector = std::vector<unsigned char>;
@@ -24,7 +18,6 @@ public:
 private:
     BasicAccessControl();
 
-    // TODO: should have only one value to configure this
     static const Alg DEFAULT_ALG = DES3;
     static const MacAlg DEFAULT_MAC_ALG = DES;
 

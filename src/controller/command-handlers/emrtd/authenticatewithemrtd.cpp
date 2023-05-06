@@ -24,9 +24,6 @@
 
 #include "../signauthutils.hpp"
 
-#include "../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
-#include "../../../../lib/libelectronic-id/include/electronic-id/enums.hpp"
-
 #include <QApplication>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -34,24 +31,8 @@
 #include <QCryptographicHash>
 #include <QDir>
 
-#include "../signauthutils.hpp"
-
-#include <map>
-
-#include <openssl/x509.h>
-#include <openssl/err.h>
-
-#include <openssl/asn1.h>
-
-#include <map>
-#include <qt5/QtCore/QVariantMap>
-#include <qt5/QtCore/QCryptographicHash>
-#include <qt5/QtCore/QByteArray>
-
 // Use common base64-encoding defaults.
 constexpr auto BASE64_OPTIONS = QByteArray::Base64Encoding | QByteArray::KeepTrailingEquals;
-
-using namespace electronic_id;
 
 AuthenticateWithEmrtd::AuthenticateWithEmrtd(const CommandWithArguments& cmd) : EmrtdCertificateReader(cmd)
 {
@@ -103,11 +84,6 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
 ) {
     // Getting the larger files off the chip will take time.
     window->showWaitingForTokenPage();
-
-    // TODO: currently double setting up secret
-
-    // TODO: add transaction guard
-    // auto transactionGuard = cardInfo.eid().smartcard()->beginTransaction();
 
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo.eid().smartcard());
 

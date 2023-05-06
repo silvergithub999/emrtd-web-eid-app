@@ -20,6 +20,7 @@ add_library(controller STATIC
         command-handlers/emrtd/utils/bac.hpp
         command-handlers/emrtd/utils/bac.cpp
         command-handlers/emrtd/utils/emrtdutils.hpp
+        command-handlers/emrtd/utils/cardutils.hpp
         command-handlers/emrtd/utils/asn1utils.hpp
         command-handlers/emrtd/securemessagingobject.hpp
         command-handlers/emrtd/securemessagingobject.cpp

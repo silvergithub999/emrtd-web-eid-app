@@ -1,27 +1,15 @@
 #ifndef WEB_EID_APP_CRYPTOUTILS_H
 #define WEB_EID_APP_CRYPTOUTILS_H
 
-#include <set>
 #include <openssl/ossl_typ.h>
 #include <openssl/evp.h>
-#include <algorithm>
-#include <iostream>
 #include <openssl/sha.h>
-#include <cstring>
-#include "../../../../../lib/libelectronic-id/include/electronic-id/enums.hpp"
-#include "../../../../../lib/libelectronic-id/lib/libpcsc-cpp/include/pcsc-cpp/pcsc-cpp.hpp"
-#include <cstdint>
-#include <vector>
-#include "emrtdenums.hpp"
 #include <openssl/des.h>
-#include <sstream>
-#include <iomanip>
-#include <map>
+#include <vector>
 #include "asn1utils.hpp"
 
 using byte_vector = std::vector<unsigned char>;
 using namespace electronic_id;
-
 
 inline byte_vector paddingMethod2(byte_vector data)
 {
@@ -53,10 +41,6 @@ inline byte_vector removePadding2(byte_vector data) {
     }
     throw std::runtime_error("Could not remove padding");
 }
-
-// https://www.icao.int/publications/documents/9303_p11_cons_en.pdf
-//  page 30 - oids for which alg is supproted cmac vs des
-
 
 inline byte_vector des_ede3_cbc_encrypt(const byte_vector& input, byte_vector key, int enc) {
     DES_cblock iv = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
@@ -126,15 +110,13 @@ inline byte_vector iso9797_alg3_mac(byte_vector data, byte_vector k1, byte_vecto
 }
 
 inline byte_vector computeMac(const byte_vector key, const byte_vector data, MacAlg alg) {
-    if (alg == AES_CMAC) {
-        throw std::runtime_error("TODO: AES_CMAC no implemented, currently unsupported mac");
-    } else if (alg == DES) {
+    if (alg == DES) {
         byte_vector k1(key.begin(), key.begin() + 8);
         byte_vector k2(key.end() - 8, key.end());
 
         return iso9797_alg3_mac(data, k1, k2);
     } else {
-        throw std::runtime_error("Unsupported MAC algorithm. Only AES-CMAC and DES supported for now.");
+        throw std::runtime_error("Unsupported MAC algorithm. Only DES supported for now.");
     }
 }
 

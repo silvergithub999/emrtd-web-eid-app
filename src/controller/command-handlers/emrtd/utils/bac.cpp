@@ -1,13 +1,4 @@
-//
-// Created by silver on 22.4.7.
-//
-
-#include <array>
-#include <openssl/ossl_typ.h>
-#include <openssl/des.h>
 #include <random>
-#include <algorithm>
-#include <functional>
 #include "bac.hpp"
 
 using random_bytes_engine = std::independent_bits_engine<std::default_random_engine, CHAR_BIT, unsigned char>;
@@ -15,7 +6,6 @@ using random_bytes_engine = std::independent_bits_engine<std::default_random_eng
 using namespace electronic_id;
 
 BasicAccessControl::BasicAccessControl() {
-
 }
 
 SecureMessagingObject BasicAccessControl::establishBacSessionKeys(
@@ -109,9 +99,7 @@ byte_vector BasicAccessControl::computeKey(const byte_vector& keySeed, const Key
     // D = keySeed + c
     byte_vector D = combineByteVectors({keySeed, c});
 
-    if (alg == AES256) {
-        throw std::runtime_error("AES256 currently not supported");
-    } else if (alg == DES3) {
+    if (alg == DES3) {
         const byte_vector hashD = calculateSha1Digest(D);
         byte_vector r(hashD.begin(), hashD.end() + 16);
         DES_cblock keyA;
@@ -131,7 +119,7 @@ byte_vector BasicAccessControl::computeKey(const byte_vector& keySeed, const Key
 
         return result;
     } else {
-        throw std::runtime_error("Unknown encryption algorithm");
+        throw std::runtime_error("Only DES3 is currently supported");
     }
 }
 
