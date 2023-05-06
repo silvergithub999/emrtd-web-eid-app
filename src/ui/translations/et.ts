@@ -268,4 +268,195 @@
         <translation>Palun sisesta avanevas PIN-dialoogiaknas allkirjastamiseks PIN-kood.</translation>
     </message>
 </context>
+<context>
+<name>EmrtdDialog</name>
+<message>
+<source>The smart card service required to use the ID-card is not running. Please start the smart card service and try again.</source>
+<translation>ID-kaardi kasutamiseks vajalik Kiipkaardi teenus ei tööta. Palun käivita käivita Kiipkaardi teenus ja proovi uuesti.</translation>
+</message>
+<message>
+<source>&lt;b&gt;Card reader not connected.&lt;/b&gt; Please connect the card reader to the computer.</source>
+<translation>&lt;b&gt;Kaardilugeja ei ole ühendatud.&lt;/b&gt; Palun ühenda kaardilugeja arvutiga.</translation>
+</message>
+<message>
+<source>Technical error</source>
+<translation>Tehniline viga</translation>
+</message>
+<message>
+<source>&lt;b&gt;ID-card not found.&lt;/b&gt; Please insert the ID-card into the reader.</source>
+<translation>&lt;b&gt;ID-kaarti ei leitud.&lt;/b&gt; Palun sisesta ID-kaart lugejasse.</translation>
+</message>
+<message>
+<source>Launch the Smart Card service</source>
+<translation>Käivita Kiipkaardi teenus</translation>
+</message>
+<message>
+<source>Connect the card reader</source>
+<translation>Ühenda kaardilugeja</translation>
+</message>
+<message>
+<source>Insert the ID-card</source>
+<translation>Sisesta ID-kaart</translation>
+</message>
+<message>
+<source>The ID-card was removed from the reader. Please insert the ID-card into the reader.</source>
+<translation>ID-kaart eemaldati lugejast. Palun sisesta ID-kaart lugejasse.</translation>
+</message>
+<message>
+<source>Operation failed. Make sure that the ID-card and the card reader are connected correctly.</source>
+<translation>Toiming ebaõnnestus. Palun veendu, et ID-kaart ja kaardilugeja on korrektselt ühendatud.</translation>
+</message>
+<message>
+<source>Check the ID-card and the reader connection</source>
+<translation>Kontrolli ID-kaardi ja lugeja ühendust</translation>
+</message>
+<message>
+<source>Connection to the ID-card or reader failed. Make sure that the ID-card and the card reader are connected correctly.</source>
+<translation>Ühendus ID-kaardi või lugejaga ebaõnnestus. Palun veendu, et ID-kaart ja kaardilugeja on korrektselt ühendatud.</translation>
+</message>
+<message>
+<source>The desired operation cannot be performed with the inserted ID-card. Make sure that the ID-card is supported by the Web eID application.</source>
+<translation>Sisestatud ID-kaardiga ei saa soovitud toimingut teostada. Palun veendu, et ID-kaart on Web eID rakenduse poolt toetatud.</translation>
+</message>
+<message>
+<source>Operation not supported</source>
+<translation>Toiming ei ole toetatud</translation>
+</message>
+<message>
+<source>Error communicating with the card.</source>
+<translation>Viga kaardiga suhtlemisel.</translation>
+</message>
+<message>
+<source>Operation failed</source>
+<translation>Toiming ebaõnnestus</translation>
+</message>
+<message>
+<source>Card driver error. Please try again.</source>
+<translation>Kaardi draiveri viga. Palun proovi uuesti.</translation>
+</message>
+<message>
+<source>Card driver error</source>
+<translation>Kaardi draiveri viga</translation>
+</message>
+<message>
+<source>An error occurred in the Smart Card service required to use the ID-card. Make sure that the ID-card and the card reader are connected correctly or relaunch the Smart Card service.</source>
+<translation>ID-kaardi kasutamiseks vajalikus Kiipkaardi teenuses tekkis viga. Palun veendu, et ID-kaart ja kaardilugeja on korrektselt ühendatud või taaskäivita Kiipkaardi teenus.</translation>
+</message>
+<message>
+<source>The card in the reader is not supported. Make sure that the entered ID-card is supported by the Web eID application.</source>
+<translation>Lugejas on mittetoetatud kaart. Palun veendu, et sisestatud ID-kaart on Web eID rakenduses toetatud.</translation>
+</message>
+<message>
+<source>Unknown error</source>
+<translation>Tundmatu viga</translation>
+</message>
+<message>
+<source>Waiting for card</source>
+                    <translation>Loen kaardilt andmeid</translation>
+</message>
+<message>
+<source>Try again</source>
+<translation>Proovi uuesti</translation>
+</message>
+<message>
+<source>Cancel</source>
+<translation>Katkesta</translation>
+</message>
+<message>
+<source>Confirm</source>
+<translation>Kinnita</translation>
+</message>
+<message>
+<source>Help</source>
+<translation>Abi</translation>
+</message>
+<message>
+<source>https://www.id.ee/en/article/how-to-check-that-your-id-card-reader-is-working/</source>
+<translation>https://www.id.ee/artikkel/kuidas-kontrollida-id-kaardi-ja-lugeja-tookorras-olekut/</translation>
+</message>
+<message>
+<source>Operation failed. More detailed information can be found in the log files.</source>
+<translation>Toiming ebaõnnestus. Täpsem informatsioon on leitav logifailidest.</translation>
+</message>
+<message>
+<source>Version: %1</source>
+<translation>Versioon: %1</translation>
+</message>
+<message>
+<source>Web eID extension is disabled. The extension must be enabled in the web browser to authenticate and sign with an ID-card.</source>
+<translation>Web eID laiendus on keelatud. ID-kaardiga isikutuvastuseks ja allkirjastamiseks tuleb veebilehitsejas laiendus lubada.</translation>
+</message>
+<message>
+<source>Open Safari settings...</source>
+<translation>Ava Safari seaded...</translation>
+</message>
+<message>
+<source>&lt;b&gt;This is a companion application to the Web eID browser extension&lt;/b&gt; and cannot be used independently. To uninstall the extension, remove this application.</source>
+<translation>&lt;b&gt;Rakendus Web eID laienduse kasutamiseks.&lt;/b&gt; Antud rakendust ei saa kasutada iseseisvalt. Laienduse eemaldamiseks kustutage see rakendus.</translation>
+</message>
+<message>
+<source>About Web eID</source>
+<translation>Web eID teave</translation>
+</message>
+<message>
+<source>Time remaining: &lt;b&gt;%1&lt;/b&gt;</source>
+<translation>Aega jäänud: &lt;b&gt;%1&lt;/b&gt;</translation>
+</message>
+<message>
+<source>Get help here: &lt;a href=&quot;https://www.id.ee&quot;&gt;id.ee&lt;/a&gt;</source>
+    <translation>Abi saab siit: &lt;a href=&quot;https://www.id.ee&quot;&gt;id.ee&lt;/a&gt;</translation>
+    </message>
+    <message>
+    <source>Operation failed. Make sure that the driver of the corresponding card reader is used. Read more &lt;a href=&quot;https://www.id.ee/en/article/using-pinpad-card-reader-drivers/&quot;&gt;here&lt;/a&gt;.</source>
+    <translation>Toiming ebaõnnestus. Palun veendu, et kasutusel on vastava kaardilugeja driver. Loe lähemalt &lt;a href=&quot;https://www.id.ee/artikkel/pinpad-kaardilugeja-draiverite-kasutamine/&quot;&gt;siit&lt;/a&gt;.</translation>
+    </message>
+    <message>
+    <source>By clicking Confirm, I agree to the transfer the following data to the service provider:</source>
+<translation>Vajutades Kinnita nupule nõustun allpool välja toodud andmete edastamisega teenusepakkujale:</translation>
+</message>
+<message>
+<source>Confirm</source>
+<translation>Kinnita</translation>
+</message>
+<message>
+<source>Authenticate with eMRTD</source>
+<translation>Isikutuvastus eMRTD-ga</translation>
+</message>
+<message>
+<source>Issuing State</source>
+<translation>Dokumendi väljaandja</translation>
+</message>
+<message>
+<source>Document Number</source>
+<translation>Dokumendi number</translation>
+</message>
+<message>
+<source>ID Code</source>
+<translation>ID kood</translation>
+</message>
+<message>
+<source>Date of Birth</source>
+<translation>Sünniaeg</translation>
+</message>
+<message>
+<source>Gender</source>
+<translation>Sugu</translation>
+</message>
+<message>
+<source>Expiration Date</source>
+<translation>Dokument kehtib kuni</translation>
+</message>
+<message>
+<source>Origin State</source>
+<translation>Sünnikoht</translation>
+</message>
+<message>
+<source>Name</source>
+<translation>Nimi</translation>
+</message>
+<message>
+<source>Photo</source>
+<translation>Foto</translation>
+</message>
+</context>
 </TS>

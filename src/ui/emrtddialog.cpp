@@ -383,7 +383,7 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         return;
     }
 
-    setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with EMRTD"); });
+    setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with eMRTD"); });
     setTrText(ui->authenticationDescriptionLabel, [] {
         return tr("By clicking Confirm, I agree to the transfer the following data to the service provider:");
     });
@@ -412,14 +412,14 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     insertItemToQListWidget(
         ui->authenticationItemList,
-        QString::fromStdString("Photo")
+        "Photo"
     );
 
     for(const auto& elem : parseMrz(dg01)) {
         insertItemToQListWidget(
             ui->authenticationItemList,
-            QString::fromStdString(elem.first),
-            QString::fromStdString(elem.second)
+            elem.first.c_str(),
+            elem.second.c_str()
         );
     }
 
@@ -461,25 +461,22 @@ std::map<std::string, std::string> EmrtdDialog::parseMrz(
     return parsedMrz;
 }
 
+// TODO: Need to do to the QListWidgetItem same stuff as in setTrtext
+
 void EmrtdDialog::insertItemToQListWidget(
     QListWidget* list,
-    const QString& key,
-    const QString& value
+    const char* key,
+    const char* value
 ) {
-    QListWidgetItem* item = new QListWidgetItem(key + ": " + value);
-    // Removing the selectable flag from the list item
+    QListWidgetItem* item = new QListWidgetItem(tr("%1: %2").arg(tr(key)).arg(value), list);
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
-
-    list->insertItem(0, item);
 }
 
 void EmrtdDialog::insertItemToQListWidget(
     QListWidget* list,
-    const QString& value
+    const char* value
 ) {
-    QListWidgetItem* item = new QListWidgetItem(value);
-    // Removing the selectable flag from the list item
+    QListWidgetItem* item = new QListWidgetItem(tr(value), list);
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
-
-    list->insertItem(1, item);
 }
+

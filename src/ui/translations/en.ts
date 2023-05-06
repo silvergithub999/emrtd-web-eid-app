@@ -268,4 +268,195 @@
         <translation>Please enter PIN for signing in the PIN dialog window that opens.</translation>
     </message>
 </context>
+    <context>
+        <name>EmrtdDialog</name>
+        <message>
+            <source>The smart card service required to use the ID-card is not running. Please start the smart card service and try again.</source>
+            <translation>The smart card service required to use the ID-card is not running. Please start the smart card service and try again.</translation>
+        </message>
+        <message>
+            <source>&lt;b&gt;Card reader not connected.&lt;/b&gt; Please connect the card reader to the computer.</source>
+            <translation>&lt;b&gt;Card reader not connected.&lt;/b&gt; Please connect the card reader to the computer.</translation>
+        </message>
+        <message>
+            <source>Technical error</source>
+            <translation>Technical error</translation>
+        </message>
+        <message>
+            <source>&lt;b&gt;ID-card not found.&lt;/b&gt; Please insert the ID-card into the reader.</source>
+            <translation>&lt;b&gt;ID-card not found.&lt;/b&gt; Please insert the ID-card into the reader.</translation>
+        </message>
+        <message>
+            <source>Launch the Smart Card service</source>
+            <translation>Launch the Smart Card service</translation>
+        </message>
+        <message>
+            <source>Connect the card reader</source>
+            <translation>Connect the card reader</translation>
+        </message>
+        <message>
+            <source>Insert the ID-card</source>
+            <translation>Insert the ID-card</translation>
+        </message>
+        <message>
+            <source>The ID-card was removed from the reader. Please insert the ID-card into the reader.</source>
+            <translation>The ID-card was removed from the reader. Please insert the ID-card into the reader.</translation>
+        </message>
+        <message>
+            <source>Operation failed. Make sure that the ID-card and the card reader are connected correctly.</source>
+            <translation>Operation failed. Make sure that the ID-card and the card reader are connected correctly.</translation>
+        </message>
+        <message>
+            <source>Check the ID-card and the reader connection</source>
+            <translation>Check the ID-card and the reader connection</translation>
+        </message>
+        <message>
+            <source>Connection to the ID-card or reader failed. Make sure that the ID-card and the card reader are connected correctly.</source>
+            <translation>Connection to the ID-card or reader failed. Make sure that the ID-card and the card reader are connected correctly.</translation>
+        </message>
+        <message>
+            <source>The desired operation cannot be performed with the inserted ID-card. Make sure that the ID-card is supported by the Web eID application.</source>
+            <translation>The desired operation cannot be performed with the inserted ID-card. Make sure that the ID-card is supported by the Web eID application.</translation>
+        </message>
+        <message>
+            <source>Operation not supported</source>
+            <translation>Operation not supported</translation>
+        </message>
+        <message>
+            <source>Error communicating with the card.</source>
+            <translation>Error communicating with the card.</translation>
+        </message>
+        <message>
+            <source>Operation failed</source>
+            <translation>Operation failed</translation>
+        </message>
+        <message>
+            <source>Card driver error. Please try again.</source>
+            <translation>Card driver error. Please try again.</translation>
+        </message>
+        <message>
+            <source>Card driver error</source>
+            <translation>Card driver error</translation>
+        </message>
+        <message>
+            <source>An error occurred in the Smart Card service required to use the ID-card. Make sure that the ID-card and the card reader are connected correctly or relaunch the Smart Card service.</source>
+            <translation>An error occurred in the Smart Card service required to use the ID-card. Make sure that the ID-card and the card reader are connected correctly or relaunch the Smart Card service.</translation>
+        </message>
+        <message>
+            <source>The card in the reader is not supported. Make sure that the entered ID-card is supported by the Web eID application.</source>
+            <translation>The card in the reader is not supported. Make sure that the entered ID-card is supported by the Web eID application.</translation>
+        </message>
+        <message>
+            <source>Unknown error</source>
+            <translation>Unknown error</translation>
+        </message>
+        <message>
+            <source>Waiting for card</source>
+            <translation>Waiting for card</translation>
+        </message>
+        <message>
+            <source>Try again</source>
+            <translation>Try again</translation>
+        </message>
+        <message>
+            <source>Cancel</source>
+            <translation>Cancel</translation>
+        </message>
+        <message>
+            <source>Confirm</source>
+            <translation>Confirm</translation>
+        </message>
+        <message>
+            <source>Help</source>
+            <translation>Help</translation>
+        </message>
+        <message>
+            <source>https://www.id.ee/en/article/how-to-check-that-your-id-card-reader-is-working/</source>
+            <translation>https://www.id.ee/en/article/how-to-check-that-your-id-card-reader-is-working/</translation>
+        </message>
+        <message>
+            <source>Operation failed. More detailed information can be found in the log files.</source>
+            <translation>Operation failed. More detailed information can be found in the log files.</translation>
+        </message>
+        <message>
+            <source>Version: %1</source>
+            <translation>Version: %1</translation>
+        </message>
+        <message>
+            <source>Web eID extension is disabled. The extension must be enabled in the web browser to authenticate and sign with an ID-card.</source>
+            <translation>Web eID extension is disabled. The extension must be enabled in the web browser to authenticate and sign with an ID-card.</translation>
+        </message>
+        <message>
+            <source>Open Safari settings...</source>
+            <translation>Open Safari settings...</translation>
+        </message>
+        <message>
+            <source>&lt;b&gt;This is a companion application to the Web eID browser extension&lt;/b&gt; and cannot be used independently. To uninstall the extension, remove this application.</source>
+            <translation>&lt;b&gt;This is a companion application to the Web eID browser extension&lt;/b&gt; and cannot be used independently. To uninstall the extension, remove this application.</translation>
+        </message>
+        <message>
+            <source>About Web eID</source>
+            <translation>About Web eID</translation>
+        </message>
+        <message>
+            <source>Time remaining: &lt;b&gt;%1&lt;/b&gt;</source>
+            <translation>Time remaining: &lt;b&gt;%1&lt;/b&gt;</translation>
+        </message>
+        <message>
+            <source>Get help here: &lt;a href=&quot;https://www.id.ee&quot;&gt;id.ee&lt;/a&gt;</source>
+            <translation>Get help here: &lt;a href=&quot;https://www.id.ee&quot;&gt;id.ee&lt;/a&gt;</translation>
+        </message>
+        <message>
+            <source>Operation failed. Make sure that the driver of the corresponding card reader is used. Read more &lt;a href=&quot;https://www.id.ee/en/article/using-pinpad-card-reader-drivers/&quot;&gt;here&lt;/a&gt;.</source>
+            <translation>Operation failed. Make sure that the driver of the corresponding card reader is used. Read more &lt;a href=&quot;https://www.id.ee/en/article/using-pinpad-card-reader-drivers/&quot;&gt;here&lt;/a&gt;.</translation>
+        </message>
+        <message>
+            <source>By clicking Confirm, I agree to the transfer the following data to the service provider:</source>
+            <translation>By clicking Confirm, I agree to the transfer the following data to the service provider:</translation>
+        </message>
+        <message>
+            <source>Confirm</source>
+            <translation>Confirm</translation>
+        </message>
+        <message>
+            <source>Authenticate with eMRTD</source>
+            <translation>Authenticate with eMRTD</translation>
+        </message>
+        <message>
+            <source>Issuing State</source>
+            <translation>Issuing State</translation>
+        </message>
+        <message>
+            <source>Document Number</source>
+            <translation>Document Number</translation>
+        </message>
+        <message>
+            <source>ID Code</source>
+            <translation>ID Code</translation>
+        </message>
+        <message>
+            <source>Date of Birth</source>
+            <translation>Date of Birth</translation>
+        </message>
+        <message>
+            <source>Gender</source>
+            <translation>Gender</translation>
+        </message>
+        <message>
+            <source>Expiration Date</source>
+            <translation>Expiration Date</translation>
+        </message>
+        <message>
+            <source>Origin State</source>
+            <translation>Origin State</translation>
+        </message>
+        <message>
+            <source>Name</source>
+            <translation>Name</translation>
+        </message>
+        <message>
+            <source>Photo</source>
+            <translation>Photo</translation>
+        </message>
+    </context>
 </TS>
