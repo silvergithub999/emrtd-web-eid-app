@@ -250,13 +250,15 @@ void ControllerEmrtd::disposeUI()
     }
 }
 
-void ControllerEmrtd::onConfirmCommandHandler(const electronic_id::CardInfo::ptr cardInfo)
-{
+void ControllerEmrtd::onConfirmCommandHandler(
+    const electronic_id::CardInfo::ptr cardInfo,
+    const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+) {
     stopCardEventMonitorThread();
 
     try {
         CommandHandlerConfirmThreadEmrtd* commandHandlerConfirmThread =
-            new CommandHandlerConfirmThreadEmrtd(this, *commandHandler, window, *cardInfo);
+            new CommandHandlerConfirmThreadEmrtd(this, *commandHandler, window, *cardInfo, readFiles);
         connect(commandHandlerConfirmThread, &CommandHandlerConfirmThreadEmrtd::completed, this,
                 &ControllerEmrtd::onCommandHandlerConfirmCompleted);
         saveChildThreadPtrAndConnectFailureFinish(commandHandlerConfirmThread);
@@ -312,10 +314,12 @@ void ControllerEmrtd::connectRetry(const ControllerChildThread* childThread)
     connect(window, &EmrtdUI::retry, this, &ControllerEmrtd::onRetry);
 }
 
-void ControllerEmrtd::onDialogOK(const electronic_id::CardInfo::ptr cardInfo)
-{
+void ControllerEmrtd::onDialogOK(
+    const electronic_id::CardInfo::ptr cardInfo,
+    const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+) {
     if (commandHandler) {
-        onConfirmCommandHandler(cardInfo);
+        onConfirmCommandHandler(cardInfo, readFiles);
     } else {
         // This should not happen, and when it does, OK should be equivalent to cancel.
         onDialogCancel();

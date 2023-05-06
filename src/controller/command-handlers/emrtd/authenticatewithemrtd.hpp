@@ -27,6 +27,7 @@
 #include "securemessagingobject.hpp"
 #include "utils/bac.hpp"
 #include "utils/asn1utils.hpp"
+#include <map>
 
 using byte_vector = std::vector<unsigned char>;
 using namespace electronic_id;
@@ -39,7 +40,12 @@ public:
    explicit AuthenticateWithEmrtd(const CommandWithArguments& cmd);
 
    void connectSignals(const EmrtdUI* window) override;
-   QVariantMap onConfirm(EmrtdUI* window, const electronic_id::CardInfo& cardInfo) override;
+
+   QVariantMap onConfirm(
+       EmrtdUI* window,
+       const electronic_id::CardInfo& cardInfo,
+       const std::map<byte_vector, byte_vector> readFiles
+       ) override;
 
 private:
    QString challengeNonce;
@@ -59,4 +65,6 @@ private:
    );
 
    QString getHashAlgorithmName(byte_vector dg14);
+
+   QByteArray convertToBase64(const byte_vector data);
 };

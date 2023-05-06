@@ -41,6 +41,7 @@
 #include <QUrl>
 #include <application.hpp>
 #include <regex>
+#include <map>
 
 #include "../controller/command-handlers/emrtd/utils/asn1utils.hpp"
 #include "../controller/command-handlers/emrtd/utils/bac.hpp"
@@ -384,7 +385,7 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
 
     setTrText(ui->authenticationPageTitleLabel, [] { return tr("Authenticate with EMRTD"); });
     setTrText(ui->authenticationDescriptionLabel, [] {
-        return tr("By authenticating, I agree to the transfer the following data to the service provider:");
+        return tr("By clicking Confirm, I agree to the transfer the following data to the service provider:");
     });
 
     byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo->eid().smartcard());
@@ -395,14 +396,19 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         throw std::runtime_error("The card does not have the eMRTD applet.");
     }
 
-    // TODO: currently creating of session keys and reading dg01 is done twice.
+    // TODO: currently creating of session keys is done twice.
     //  This is because could not pass smo to the lambda function to get it to the
     //  authenticatewithemrtd.cpp file. This is because of the const keyword - smo updates
     //  the internal SSC for each request and cannot be const.
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
 
+    // TODO: get facial image from DG02 and display it as well
     byte_vector dg01 = smo.secureReadFile(cardInfo->eid().smartcard(), {0x01, 0x01});
+
+    const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles = {
+        {{0x01, 0x01}, dg01},
+    };
 
     insertItemToQListWidget(
         ui->authenticationItemList,
@@ -417,9 +423,7 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         );
     }
 
-    // TODO: get facial image from DG02 and display it as well
-
-    setupOK([this, cardInfo] { emit accepted(cardInfo); });
+    setupOK([this, cardInfo, readFiles] { emit accepted(cardInfo, readFiles); });
 
     ui->pageStack->setCurrentIndex(int(Page::AUTHENTICATE_WITH_EMRTD));
 }

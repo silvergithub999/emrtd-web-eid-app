@@ -53,7 +53,10 @@ public: // slots
     void onCertificatesLoaded();
 
     // Called either directly from onDialogOK().
-    void onConfirmCommandHandler(const electronic_id::CardInfo::ptr cardInfo);
+    void onConfirmCommandHandler(
+        const electronic_id::CardInfo::ptr cardInfo,
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        );
 
     // Called from CommandHandlerConfirm thread.
     void onCommandHandlerConfirmCompleted(const QVariantMap& result);
@@ -62,7 +65,10 @@ public: // slots
     void onRetry();
 
     // User events from the dialog.
-    void onDialogOK(const electronic_id::CardInfo::ptr cardInfo);
+    void onDialogOK(
+        const electronic_id::CardInfo::ptr cardInfo,
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        );
     void onDialogCancel();
 
     // Failure handler, reports the error and quits the application.

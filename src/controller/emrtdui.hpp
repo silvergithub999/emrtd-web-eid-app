@@ -51,7 +51,10 @@ public:
     virtual void showWaitingForTokenPage() = 0;
 
 signals:
-    void accepted(const electronic_id::CardInfo::ptr cardInfo);
+    void accepted(
+        const electronic_id::CardInfo::ptr cardInfo,
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        );
     void retry();
     void failure(const QString& error);
 

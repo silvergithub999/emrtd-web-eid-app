@@ -80,7 +80,8 @@ QVariantMap createAuthenticationToken(
 
 QVariantMap AuthenticateWithEmrtd::onConfirm(
     EmrtdUI* window,
-    const electronic_id::CardInfo& cardInfo
+    const electronic_id::CardInfo& cardInfo,
+    const std::map<byte_vector, byte_vector> readFiles
 ) {
     // Getting the larger files off the chip will take time.
     window->showWaitingForTokenPage();
@@ -92,7 +93,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo.eid().smartcard());
 
-    const auto mrzEmrtd = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x01});
+    const auto mrzEmrtd = convertToBase64(readFiles.at({0x01, 0x01}));
     const auto photo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x02});
     const auto publicKeyInfo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
@@ -100,7 +101,6 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     byte_vector dg14 = smo.secureReadFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
     const auto hashAlgorithmName = getHashAlgorithmName(dg14);
 
-    // TODO: use the hashAlgorithm variable
     const auto signature = createSignature(challengeNonce, origin.url(), hashAlgorithmName, smo, cardInfo.eid().smartcard());
 
     return createAuthenticationToken(
@@ -113,16 +113,19 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     );
 }
 
+QByteArray AuthenticateWithEmrtd::convertToBase64(const byte_vector data) {
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(data.data()),
+                                   int(data.size()))
+        .toBase64(BASE64_OPTIONS);
+}
+
 QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
     SecureMessagingObject& smo,
     const pcsc_cpp::SmartCard& card,
     byte_vector fileName
-)
-{
+) {
     byte_vector fileData = smo.secureReadFile(card, fileName);
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
-                                   int(fileData.size()))
-        .toBase64(BASE64_OPTIONS);
+    return convertToBase64(fileData);
 }
 
 void AuthenticateWithEmrtd::connectSignals(const EmrtdUI* window) {

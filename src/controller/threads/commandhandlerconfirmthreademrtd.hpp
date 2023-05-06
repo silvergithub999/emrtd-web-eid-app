@@ -30,10 +30,11 @@ class CommandHandlerConfirmThreadEmrtd : public ControllerChildThread
 
 public:
     CommandHandlerConfirmThreadEmrtd(QObject* parent, CommandHandlerEmrtd& handler, EmrtdUI* w,
-                               const electronic_id::CardInfo& cardInfo) :
+                               const electronic_id::CardInfo& cardInfo,
+                               const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles) :
        ControllerChildThread(parent),
        commandHandler(handler), cmdType(commandHandler.commandType()), window(w),
-       cardInfo(cardInfo)
+       cardInfo(cardInfo), readFiles(readFiles)
    {
    }
 
@@ -43,7 +44,7 @@ signals:
 private:
    void doRun() override
    {
-       const auto result = commandHandler.onConfirm(window, cardInfo);
+       const auto result = commandHandler.onConfirm(window, cardInfo, readFiles);
        emit completed(result);
    }
 
@@ -53,4 +54,5 @@ private:
    const std::string cmdType;
    EmrtdUI* window;
    electronic_id::CardInfo cardInfo;
+   const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles;
 };

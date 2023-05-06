@@ -36,14 +36,18 @@ public:
     virtual void run(const std::vector<electronic_id::CardInfo::ptr>& cards) = 0;
     virtual void connectSignals(const EmrtdUI* window) = 0;
     virtual QVariantMap onConfirm(EmrtdUI* window,
-                                  const electronic_id::CardInfo& cardInfo) = 0;
+                                  const electronic_id::CardInfo& cardInfo,
+                                  const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles) = 0;
 
     CommandType commandType() const { return command.first; }
 
 signals:
     void retry(const RetriableError error);
 
-    void onAuthenticateWithEmrtd(const QUrl& origin, electronic_id::CardInfo::ptr cardInfo);
+    void onAuthenticateWithEmrtd(
+        const QUrl& origin,
+        electronic_id::CardInfo::ptr cardInfo
+        );
 
 protected:
     CommandHandlerEmrtd(const CommandWithArguments& cmd) : command(cmd) {}
