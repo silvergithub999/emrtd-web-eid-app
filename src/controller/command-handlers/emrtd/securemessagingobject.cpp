@@ -27,7 +27,7 @@ SecureMessagingObject::SecureMessagingObject(
     this->sessionMacKey = sessionMacKey;
 }
 
-byte_vector SecureMessagingObject::send(const pcsc_cpp::SmartCard& card, const pcsc_cpp::CommandApdu& apdu) {
+byte_vector SecureMessagingObject::secureSend(const pcsc_cpp::SmartCard& card, const pcsc_cpp::CommandApdu& apdu) {
     pcsc_cpp::CommandApdu protectedApdu = secureMessaging(apdu);
     const auto response = sendApduAndValidate(card, protectedApdu);
     return processResponseData(response);
@@ -191,7 +191,7 @@ byte_vector SecureMessagingObject::processResponseData(const byte_vector& respon
     return decryptedData;
 }
 
-byte_vector SecureMessagingObject::readFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName) {
+byte_vector SecureMessagingObject::secureReadFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName) {
     auto length = readDataLengthFromAsn1(card, fileName);
     return readBinary(card, length, 0x32);
 }
@@ -199,13 +199,13 @@ byte_vector SecureMessagingObject::readFile(const pcsc_cpp::SmartCard& card, con
 size_t SecureMessagingObject::readDataLengthFromAsn1(const pcsc_cpp::SmartCard& card, const byte_vector& fileName)
 {
     // Selecting file
-    send(
+    secureSend(
         card,
         pcsc_cpp::CommandApdu(0x00, 0xA4, 0x02, 0x0C, fileName, 0x00)
     );
 
     // Reading first 4 bytes
-    byte_vector responseData = send(
+    byte_vector responseData = secureSend(
         card,
         pcsc_cpp::CommandApdu{0x00, 0xB0, 0x00, 0x00, byte_vector(0), 0x04}
     );
@@ -235,7 +235,7 @@ byte_vector SecureMessagingObject::readBinary(const pcsc_cpp::SmartCard& card, c
         readBinary.p2 = static_cast<unsigned char>(offset & 0xff);
         readBinary.le = static_cast<unsigned char>(blockLengthVar);
 
-        byte_vector responseData = send(card, readBinary);
+        byte_vector responseData = secureSend(card, readBinary);
 
         resultBytes.insert(resultBytes.end(), responseData.cbegin(), responseData.cend());
     }

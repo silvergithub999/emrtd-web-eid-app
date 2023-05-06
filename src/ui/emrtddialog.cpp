@@ -402,7 +402,7 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
 
-    byte_vector dg01 = smo.readFile(cardInfo->eid().smartcard(), {0x01, 0x01});
+    byte_vector dg01 = smo.secureReadFile(cardInfo->eid().smartcard(), {0x01, 0x01});
 
     insertItemToQListWidget(
         ui->authenticationItemList,

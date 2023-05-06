@@ -97,7 +97,7 @@ QVariantMap AuthenticateWithEmrtd::onConfirm(
     const auto publicKeyInfo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x0f});
     const auto documentSecurityObject = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x1d});
 
-    byte_vector dg14 = smo.readFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
+    byte_vector dg14 = smo.secureReadFile(cardInfo.eid().smartcard(), {0x01, 0x0E});
     const auto hashAlgorithmName = getHashAlgorithmName(dg14);
 
     // TODO: use the hashAlgorithm variable
@@ -119,7 +119,7 @@ QByteArray AuthenticateWithEmrtd::readFileAndConvertToBase64(
     byte_vector fileName
 )
 {
-    byte_vector fileData = smo.readFile(card, fileName);
+    byte_vector fileData = smo.secureReadFile(card, fileName);
     return QByteArray::fromRawData(reinterpret_cast<const char*>(fileData.data()),
                                    int(fileData.size()))
         .toBase64(BASE64_OPTIONS);
@@ -159,7 +159,7 @@ QByteArray AuthenticateWithEmrtd::createSignature(
     // Card can sign only 8 bytes
     byte_vector shortenedUnsignedToken(hashToBeSigned.begin(), hashToBeSigned.begin() + 8);
 
-    byte_vector signature = smo.send(card,
+    byte_vector signature = smo.secureSend(card,
         pcsc_cpp::CommandApdu(0x00, 0x88, 0x00, 0x00, shortenedUnsignedToken, 0x00)
     );
 

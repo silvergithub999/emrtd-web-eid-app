@@ -22,9 +22,9 @@ public:
         const byte_vector& sessionMacKey
         );
 
-    byte_vector send(const pcsc_cpp::SmartCard& card, const pcsc_cpp::CommandApdu& apdu);
+    byte_vector secureSend(const pcsc_cpp::SmartCard& card, const pcsc_cpp::CommandApdu& apdu);
 
-    byte_vector readFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName);
+    byte_vector secureReadFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName);
 
 private:
     byte_vector ssc_counter;
