@@ -396,10 +396,6 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         throw std::runtime_error("The card does not have the eMRTD applet.");
     }
 
-    // TODO: currently creating of session keys is done twice.
-    //  This is because could not pass smo to the lambda function to get it to the
-    //  authenticatewithemrtd.cpp file. This is because of the const keyword - smo updates
-    //  the internal SSC for each request and cannot be const.
     SecureMessagingObject smo =
         BasicAccessControl::establishBacSessionKeys(secret, cardInfo->eid().smartcard());
 
@@ -423,7 +419,10 @@ void EmrtdDialog::onAuthenticateWithEmrtd(const QUrl& origin, const electronic_i
         );
     }
 
-    setupOK([this, cardInfo, readFiles] { emit accepted(cardInfo, readFiles); });
+    // Cannot pass non const object into the lambda below
+    const SecureMessagingObject& smoConst = smo;
+
+    setupOK([this, cardInfo, readFiles, smoConst] { emit accepted(cardInfo, readFiles, smoConst); });
 
     ui->pageStack->setCurrentIndex(int(Page::AUTHENTICATE_WITH_EMRTD));
 }
@@ -461,7 +460,8 @@ std::map<std::string, std::string> EmrtdDialog::parseMrz(
     return parsedMrz;
 }
 
-// TODO: Need to do to the QListWidgetItem same stuff as in setTrtext
+// TODO: Need to do to the QListWidgetItem refresh - same stuff as in setTrtext
+//  otherwise switching languages won't work for these items until restart
 
 void EmrtdDialog::insertItemToQListWidget(
     QListWidget* list,

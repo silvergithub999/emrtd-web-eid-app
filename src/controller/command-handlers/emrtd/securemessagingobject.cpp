@@ -1,6 +1,17 @@
 #include "securemessagingobject.hpp"
 #include <cmath>
 
+SecureMessagingObject::SecureMessagingObject(
+    const SecureMessagingObject& smo
+) {
+    this->ssc_counter = smo.ssc_counter;
+    this->encAlgorithm = smo.encAlgorithm;
+    this->macAlgorithm = smo.macAlgorithm;
+    this->paddingLen = smo.paddingLen;
+    this->sessionEncKey = smo.sessionEncKey;
+    this->sessionMacKey = smo.sessionMacKey;
+}
+
 void SecureMessagingObject::incrementSsc() {
     unsigned long sscCounterLong = byteVectorToLong(this->ssc_counter);
     sscCounterLong += 1;

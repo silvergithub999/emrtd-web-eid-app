@@ -81,17 +81,13 @@ QVariantMap createAuthenticationToken(
 QVariantMap AuthenticateWithEmrtd::onConfirm(
     EmrtdUI* window,
     const electronic_id::CardInfo& cardInfo,
-    const std::map<byte_vector, byte_vector> readFiles
+    const std::map<byte_vector, byte_vector> readFiles,
+    const SecureMessagingObject& smoConst
 ) {
     // Getting the larger files off the chip will take time.
     window->showWaitingForTokenPage();
 
-    byte_vector secret = readInfoFromIdAppletAndGetSecret(cardInfo.eid().smartcard());
-
-    selectEmrtdApplet(cardInfo.eid().smartcard());
-
-    SecureMessagingObject smo =
-        BasicAccessControl::establishBacSessionKeys(secret, cardInfo.eid().smartcard());
+    SecureMessagingObject& smo = *(new SecureMessagingObject(smoConst));
 
     const auto mrzEmrtd = convertToBase64(readFiles.at({0x01, 0x01}));
     const auto photo = readFileAndConvertToBase64(smo, cardInfo.eid().smartcard(), {0x01, 0x02});

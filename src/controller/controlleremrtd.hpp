@@ -55,7 +55,8 @@ public: // slots
     // Called either directly from onDialogOK().
     void onConfirmCommandHandler(
         const electronic_id::CardInfo::ptr cardInfo,
-        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles,
+        const SecureMessagingObject& smo
         );
 
     // Called from CommandHandlerConfirm thread.
@@ -67,7 +68,8 @@ public: // slots
     // User events from the dialog.
     void onDialogOK(
         const electronic_id::CardInfo::ptr cardInfo,
-        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles,
+        const SecureMessagingObject& smo
         );
     void onDialogCancel();
 

@@ -44,7 +44,8 @@ public:
    QVariantMap onConfirm(
        EmrtdUI* window,
        const electronic_id::CardInfo& cardInfo,
-       const std::map<byte_vector, byte_vector> readFiles
+       const std::map<byte_vector, byte_vector> readFiles,
+       const SecureMessagingObject& smoConst
        ) override;
 
 private:

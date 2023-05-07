@@ -22,6 +22,13 @@ public:
         const byte_vector& sessionMacKey
         );
 
+    SecureMessagingObject(
+        const SecureMessagingObject& smo
+    );
+    SecureMessagingObject(
+        SecureMessagingObject& smo
+    );
+
     byte_vector secureSend(const pcsc_cpp::SmartCard& card, const pcsc_cpp::CommandApdu& apdu);
 
     byte_vector secureReadFile(const pcsc_cpp::SmartCard& card, const byte_vector& fileName);

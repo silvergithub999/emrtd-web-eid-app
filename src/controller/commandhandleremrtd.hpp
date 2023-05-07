@@ -37,7 +37,8 @@ public:
     virtual void connectSignals(const EmrtdUI* window) = 0;
     virtual QVariantMap onConfirm(EmrtdUI* window,
                                   const electronic_id::CardInfo& cardInfo,
-                                  const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles) = 0;
+                                  const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles,
+                                  const SecureMessagingObject& smo) = 0;
 
     CommandType commandType() const { return command.first; }
 

@@ -28,6 +28,8 @@
 
 #include "observer_ptr.hpp"
 
+#include "command-handlers/emrtd/securemessagingobject.hpp"
+
 #include <QDialog>
 
 /**
@@ -53,7 +55,8 @@ public:
 signals:
     void accepted(
         const electronic_id::CardInfo::ptr cardInfo,
-        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles
+        const std::map<pcsc_cpp::byte_vector, pcsc_cpp::byte_vector> readFiles,
+        const SecureMessagingObject& smo
         );
     void retry();
     void failure(const QString& error);
