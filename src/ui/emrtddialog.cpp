@@ -43,9 +43,9 @@
 #include <regex>
 #include <map>
 
-#include "../controller/command-handlers/emrtd/utils/asn1utils.hpp"
-#include "../controller/command-handlers/emrtd/utils/bac.hpp"
-#include "../controller/command-handlers/emrtd/utils/emrtdutils.hpp"
+#include "command-handlers/emrtd/utils/asn1utils.hpp"
+#include "command-handlers/emrtd/utils/bac.hpp"
+#include "command-handlers/emrtd/utils/emrtdutils.hpp"
 
 #ifdef Q_OS_LINUX
 #include <stdio.h>

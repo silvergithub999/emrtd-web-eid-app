@@ -35,7 +35,7 @@ class ControllerEmrtd : public QObject
     Q_OBJECT
 
 public:
-    explicit ControllerEmrtd(CommandWithArgumentsPtr cmd) : command(std::move(cmd)) {}
+    ControllerEmrtd(CommandWithArgumentsPtr cmd, bool isInStdinMode);
 
     const QVariantMap& result() const { return _result; }
 

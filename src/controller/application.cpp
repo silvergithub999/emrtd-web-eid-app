@@ -151,8 +151,6 @@ CommandWithArgumentsPtr Application::parseArgs()
         const auto& command = args.first();
         const auto& arguments = args.at(1);
 
-        isEmrtdCommand = command == CMDLINE_AUTHENTICATE_WITH_EMRTD;
-        
         if (
             command == CMDLINE_GET_SIGNING_CERTIFICATE
             || command == CMDLINE_AUTHENTICATE

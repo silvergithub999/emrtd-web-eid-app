@@ -42,6 +42,7 @@ public:
     };
 
     CommandType() = default;
+    CommandTypeEnum getCommandTypeEnum();
     constexpr CommandType(const CommandTypeEnum _value) : value(_value) {}
 
     constexpr bool operator==(CommandTypeEnum other) const { return value == other; }

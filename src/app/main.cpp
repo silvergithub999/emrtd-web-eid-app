@@ -25,24 +25,33 @@
 #include "controlleremrtd.hpp"
 #include "commands.hpp"
 #include "logging.hpp"
-#include "../controller/commands.hpp"
+#include "commands.hpp"
 
 #include <QTimer>
 #include <iostream>
+
+#include "../controller/inputoutputmode.hpp"
+#include "../controller/writeresponse.hpp"
+
+CommandWithArgumentsPtr getCommand(CommandWithArgumentsPtr command, bool isInStdinMode);
 
 int main(int argc, char* argv[])
 {
    Q_INIT_RESOURCE(web_eid_resources);
    Q_INIT_RESOURCE(translations);
 
-   // TODO: should create 2 separate functions, but not sure how to pass app as parameter.
    Application app(argc, argv, QStringLiteral("web-eid"));
+   CommandWithArgumentsPtr cmdWithArgsPtrStart = app.parseArgs();
 
-   app.parseArgs();
+   // If a command is passed, the application is in command-line mode, else in stdin/stdout mode.
+   const bool isInStdinMode = !bool(cmdWithArgsPtrStart);
 
-   if (app.isEmrtdCommand) {
+   CommandWithArgumentsPtr cmdWithArgsPtr = getCommand(std::move(cmdWithArgsPtrStart), isInStdinMode);
+
+
+   if (cmdWithArgsPtr->first.getCommandTypeEnum() == CommandType::CommandTypeEnum::AUTHENTICATE_WITH_EMRTD) {
        try {
-           ControllerEmrtd controller(app.parseArgs());
+           ControllerEmrtd controller(std::move(cmdWithArgsPtr), isInStdinMode);
 
            QObject::connect(&controller, &ControllerEmrtd::quit, &app, &QApplication::quit);
            // Pass control to Controller::run() when the event loop starts.
@@ -58,7 +67,7 @@ int main(int argc, char* argv[])
        }
    } else {
        try {
-           Controller controller(app.parseArgs());
+           Controller controller(std::move(cmdWithArgsPtr), isInStdinMode);
 
            QObject::connect(&controller, &Controller::quit, &app, &QApplication::quit);
            // Pass control to Controller::run() when the event loop starts.
@@ -75,4 +84,21 @@ int main(int argc, char* argv[])
    }
 
    return -1;
+}
+
+CommandWithArgumentsPtr getCommand(CommandWithArgumentsPtr command, bool isInStdinMode) {
+    qInfo() << qApp->applicationName() << "app" << qApp->applicationVersion() << "running in"
+            << (isInStdinMode ? "stdin/stdout" : "command-line") << "mode";
+
+    // TODO: cut out stdin mode separate class to avoid bugs in safari mode
+    if (isInStdinMode) {
+        // In stdin/stdout mode we first output the version as required by the WebExtension
+        // and then wait for the actual command.
+        writeResponseToStdOut(isInStdinMode,
+                              {{QStringLiteral("version"), qApp->applicationVersion()}},
+                              "get-version");
+
+        return readCommandFromStdin();
+    }
+    return command;
 }

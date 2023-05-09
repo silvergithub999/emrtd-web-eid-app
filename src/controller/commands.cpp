@@ -35,6 +35,10 @@ const QString STDINMODE_QUIT = QStringLiteral("quit");
 
 const QString CMDLINE_AUTHENTICATE_WITH_EMRTD = QStringLiteral("authenticate-with-emrtd");
 
+CommandType::CommandTypeEnum CommandType::getCommandTypeEnum() {
+    return this->value;
+}
+
 CommandType commandNameToCommandType(const QString& cmdName)
 {
     static const std::map<QString, CommandType> SUPPORTED_COMMANDS {

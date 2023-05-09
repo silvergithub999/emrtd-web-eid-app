@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-#include "../controller/commandhandleremrtd.hpp"
+#include "commandhandleremrtd.hpp"
 
-#include "../controller/command-handlers/emrtd/authenticatewithemrtd.hpp"
+#include "command-handlers/emrtd/authenticatewithemrtd.hpp"
 
 // TODO:
 // getCommandHandler() has to be defined in the app project so that a different

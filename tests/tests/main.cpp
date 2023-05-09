@@ -207,7 +207,7 @@ void WebEidTests::quit_exits()
 {
     try {
         auto quitCmd = std::make_unique<CommandWithArguments>(CommandType::QUIT, QVariantMap {});
-        controller = std::make_unique<Controller>(std::move(quitCmd));
+        controller = std::make_unique<Controller>(std::move(quitCmd), true);
 
         QSignalSpy quitSpy(controller.get(), &Controller::quit);
         QTimer::singleShot(0, controller.get(), &Controller::run);
@@ -243,7 +243,7 @@ void WebEidTests::initGetCert()
         // GetCertificate will make an internal copy of getCertCmd.
         g_cached_GetCertificate = std::make_unique<GetCertificate>(*getCertCmd);
         // Controller will take ownership of getCertCmd, it will be null after this line.
-        controller = std::make_unique<Controller>(std::move(getCertCmd));
+        controller = std::make_unique<Controller>(std::move(getCertCmd), true);
 
     } catch (const std::exception& e) {
         QFAIL(QStringLiteral("WebEidTests::initGetCert() failed with exception: %s")
@@ -259,7 +259,7 @@ void WebEidTests::initAuthenticate()
                                                               AUTHENTICATE_COMMAND_ARGUMENT);
         // See comments in initGetCert() regarding authCmd lifetime.
         g_cached_Authenticate = std::make_unique<Authenticate>(*authCmd);
-        controller = std::make_unique<Controller>(std::move(authCmd));
+        controller = std::make_unique<Controller>(std::move(authCmd), true);
 
     } catch (const std::exception& e) {
         QFAIL(QStringLiteral("WebEidTests::initAuthenticate() failed with exception: %s")

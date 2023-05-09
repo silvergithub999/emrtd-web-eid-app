@@ -63,27 +63,14 @@ void interruptThread(QThread* thread)
 
 } // namespace
 
+Controller::Controller(CommandWithArgumentsPtr cmd, bool isInStdinMode) {
+    this->command = std::move(cmd);
+    this->isInStdinMode = isInStdinMode;
+}
+
 void Controller::run()
 {
-    // If a command is passed, the application is in command-line mode, else in stdin/stdout mode.
-    const bool isInCommandLineMode = bool(command);
-    isInStdinMode = !isInCommandLineMode;
-
-    qInfo() << qApp->applicationName() << "app" << qApp->applicationVersion() << "running in"
-            << (isInStdinMode ? "stdin/stdout" : "command-line") << "mode";
-
     try {
-        // TODO: cut out stdin mode separate class to avoid bugs in safari mode
-        if (isInStdinMode) {
-            // In stdin/stdout mode we first output the version as required by the WebExtension
-            // and then wait for the actual command.
-            writeResponseToStdOut(isInStdinMode,
-                                  {{QStringLiteral("version"), qApp->applicationVersion()}},
-                                  "get-version");
-
-            command = readCommandFromStdin();
-        }
-
         REQUIRE_NON_NULL(command)
         switch (command->first) {
         case CommandType::ABOUT:
