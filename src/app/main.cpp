@@ -48,9 +48,11 @@ int main(int argc, char* argv[])
 
    CommandWithArgumentsPtr cmdWithArgsPtr = getCommand(std::move(cmdWithArgsPtrStart), isInStdinMode);
 
+   try {
+       bool isEmrtdCommand =
+           cmdWithArgsPtr->first.getCommandTypeEnum() == CommandType::CommandTypeEnum::AUTHENTICATE_WITH_EMRTD;
 
-   if (cmdWithArgsPtr->first.getCommandTypeEnum() == CommandType::CommandTypeEnum::AUTHENTICATE_WITH_EMRTD) {
-       try {
+       if (isEmrtdCommand) {
            ControllerEmrtd controller(std::move(cmdWithArgsPtr), isInStdinMode);
 
            QObject::connect(&controller, &ControllerEmrtd::quit, &app, &QApplication::quit);
@@ -58,15 +60,7 @@ int main(int argc, char* argv[])
            QTimer::singleShot(0, &controller, &ControllerEmrtd::run);
 
            return QApplication::exec();
-
-       } catch (const ArgumentError& error) {
-           // This error must go directly to cerr to avoid extra info from the logging system.
-           std::cerr << error.what() << std::endl;
-       } catch (const std::exception& error) {
-           qCritical() << error;
-       }
-   } else {
-       try {
+       } else {
            Controller controller(std::move(cmdWithArgsPtr), isInStdinMode);
 
            QObject::connect(&controller, &Controller::quit, &app, &QApplication::quit);
@@ -74,13 +68,12 @@ int main(int argc, char* argv[])
            QTimer::singleShot(0, &controller, &Controller::run);
 
            return QApplication::exec();
-
-       } catch (const ArgumentError& error) {
-           // This error must go directly to cerr to avoid extra info from the logging system.
-           std::cerr << error.what() << std::endl;
-       } catch (const std::exception& error) {
-           qCritical() << error;
        }
+   } catch (const ArgumentError& error) {
+       // This error must go directly to cerr to avoid extra info from the logging system.
+       std::cerr << error.what() << std::endl;
+   } catch (const std::exception& error) {
+       qCritical() << error;
    }
 
    return -1;
